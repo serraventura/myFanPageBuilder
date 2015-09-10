@@ -1,0 +1,15 @@
+.tmp/
+dist/
+node_modules/
+*.zip
+.DS_Store
+app/bower_components
+app/bower_components/**/*
+npm-debug.log
+.svn/
+*.sublime-project
+*.sublime-workspace
+screenshot_*.png
+bower_components
+*.codekit
+.idea
