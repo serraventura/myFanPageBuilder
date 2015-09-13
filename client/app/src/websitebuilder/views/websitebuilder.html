@@ -1,11 +1,10 @@
 <div ng-controller="WBController">
 
     <div>
-        <div data-ng-show="salutation">Hello, {{user.name}}</div>
-        <div data-ng-show="byebye">Bye bye :'(</div>
+        <div ng-show="logged && facebookReady">Hello, {{user.name}}</div>
     </div>
 
-    <button type="button" data-ng-show="!logged" data-ng-disabled="!facebookReady" data-ng-click="IntentLogin()">Login with Facebook</button>
-    <button type="button" data-ng-show="logged" data-ng-disabled="!facebookReady" data-ng-click="logout()">Logout</button>
+    <button type="button" ng-show="!logged" ng-disabled="!facebookReady" ng-click="login()">Login with Facebook</button>
+    <button type="button" ng-show="logged" ng-disabled="!facebookReady" ng-click="logout()">Logout</button>
 
 </div>

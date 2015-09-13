@@ -1,118 +1,86 @@
 'use strict';
 
 angular.module('WebsiteBuilder')
-.controller('WBController', [
-    '$scope',
-    '$timeout',
-    'Facebook',
-    function($scope, $timeout, Facebook) {
+    .controller('WBController', function($scope, Facebook) {
 
-        // Define user empty data :/
-        $scope.user = {};
+            var userIsConnected = false;
 
-        // Defining user logged status
-        $scope.logged = false;
+            // Defining user logged status
+            $scope.logged = false;
+            $scope.user   = {};
 
-        // And some fancy flags to display messages upon user status change
-        $scope.byebye = false;
-        $scope.salutation = false;
-
-        /**
-         * Watch for Facebook to be ready.
-         * There's also the event that could be used
-         */
-        $scope.$watch(
-            function() {
-                return Facebook.isReady();
-            },
-            function(newVal) {
-                if (newVal)
-                    $scope.facebookReady = true;
-            }
-        );
-
-        var userIsConnected = false;
-
-        Facebook.getLoginStatus(function(response) {
-            if (response.status == 'connected') {
-                userIsConnected = true;
-            }
-        });
-
-        /**
-         * IntentLogin
-         */
-        $scope.IntentLogin = function() {
-            if(!userIsConnected) {
-                $scope.login();
-            }
-        };
-
-        /**
-         * Login
-         */
-        $scope.login = function() {
-            Facebook.login(function(response) {
+            Facebook.getLoginStatus(function(response) {
                 if (response.status == 'connected') {
-                    $scope.logged = true;
-                    $scope.me();
+                    userIsConnected = true;
+                }
+            });
+
+            /**
+             * Watch for Facebook to be ready.
+             * There's also the event that could be used
+             */
+            $scope.$watch(function() {
+                    return Facebook.isReady();
+                }, function(newVal) {
+                    if (newVal) {
+                        $scope.facebookReady = true;
+                    }
+                }
+            );
+
+            $scope.login = function() {
+
+                if(!userIsConnected) {
+
+                    Facebook.login(function(response) {
+                        if (response.status == 'connected') {
+                            $scope.logged = true;
+                            $scope.me();
+                        }
+
+                    });
+
+                }
+
+            };
+
+            $scope.me = function() {
+                Facebook.api('/me', function(response) {
+                    /**
+                     * Using $scope.$apply since this happens outside angular framework.
+                     */
+                    $scope.$apply(function() {
+                        $scope.user = response;
+                    });
+
+                });
+            };
+
+            $scope.logout = function() {
+                Facebook.logout(function() {
+                    $scope.$apply(function() {
+                        $scope.user   = {};
+                        $scope.logged = false;
+                    });
+                });
+            }
+
+            /**
+             * Taking approach of Events
+             */
+            $scope.$on('Facebook:statusChange', function(ev, data) {
+                console.log('Status: ', data);
+                if (data.status == 'connected') {
+                    $scope.$apply(function() {
+                        $scope.logged = true;
+                        $scope.me();
+                    });
+                } else {
+                    $scope.$apply(function() {
+                        $scope.logged = false;
+                    });
                 }
 
             });
-        };
 
-        /**
-         * me
-         */
-        $scope.me = function() {
-            Facebook.api('/me', function(response) {
-                /**
-                 * Using $scope.$apply since this happens outside angular framework.
-                 */
-                $scope.$apply(function() {
-                    $scope.user = response;
-                });
-
-            });
-        };
-
-        /**
-         * Logout
-         */
-        $scope.logout = function() {
-            Facebook.logout(function() {
-                $scope.$apply(function() {
-                    $scope.user   = {};
-                    $scope.logged = false;
-                });
-            });
-        }
-
-        /**
-         * Taking approach of Events :D
-         */
-        $scope.$on('Facebook:statusChange', function(ev, data) {
-            console.log('Status: ', data);
-            if (data.status == 'connected') {
-                $scope.$apply(function() {
-                    $scope.salutation = true;
-                    $scope.byebye     = false;
-                });
-            } else {
-                $scope.$apply(function() {
-                    $scope.salutation = false;
-                    $scope.byebye     = true;
-
-                    // Dismiss byebye message after two seconds
-                    $timeout(function() {
-                        $scope.byebye = false;
-                    }, 2000)
-                });
-            }
-
-
-        });
-
-
-    }
-])
+    });
