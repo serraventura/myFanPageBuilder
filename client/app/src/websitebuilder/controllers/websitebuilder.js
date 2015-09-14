@@ -33,25 +33,36 @@ angular.module('WebsiteBuilder')
                 if(!userIsConnected) {
 
                     Facebook.login(function(response) {
+
                         if (response.status == 'connected') {
                             $scope.logged = true;
                             $scope.me();
+                            $scope.myAccounts();
                         }
 
-                    });
+                    }, {scope: 'email,manage_pages'});
 
                 }
 
             };
 
             $scope.me = function() {
-                Facebook.api('/me', function(response) {
+                Facebook.api('/me?fields=id,name,email', function(response) {
                     /**
                      * Using $scope.$apply since this happens outside angular framework.
                      */
                     $scope.$apply(function() {
+                        console.log('me: ', response);
                         $scope.user = response;
                     });
+
+                });
+            };
+
+            $scope.myAccounts = function() {
+                Facebook.api('/me/accounts', function(response) {
+
+                    console.log('accounts: ', response);
 
                 });
             };
@@ -74,6 +85,7 @@ angular.module('WebsiteBuilder')
                     $scope.$apply(function() {
                         $scope.logged = true;
                         $scope.me();
+                        $scope.myAccounts();
                     });
                 } else {
                     $scope.$apply(function() {
