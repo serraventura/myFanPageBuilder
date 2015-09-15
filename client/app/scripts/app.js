@@ -18,12 +18,12 @@ angular.module('BuilderApp', [
                 ],
                 serie: false
             },
-
             {
-                name: 'DataMod',
+                name: 'FacebookLogin',
                 files: [
-                    'src/data/module.js',
-                    'src/data/services/dataservice.js'
+                    'src/facebooklogin/module.js',
+                    'src/facebooklogin/directives/facebooklogin.js',
+                    'src/facebooklogin/controllers/facebooklogin.js'
                 ],
                 serie: false
             }
