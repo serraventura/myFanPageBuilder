@@ -60,7 +60,7 @@ angular.module('FacebookLogin')
             };
 
             $scope.myAccounts = function() {
-                Facebook.api('/me/accounts', function(response) {
+                Facebook.api('/me/accounts?fields=link,about,name', function(response) {
 
                     console.log('accounts: ', response);
 
