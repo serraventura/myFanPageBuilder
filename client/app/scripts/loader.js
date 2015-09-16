@@ -86,17 +86,16 @@
         };
         jq.onerror = function () {
             delete jQuery;
-            alert('Error while loading jQuery!');
+            console.log('Error while loading jQuery!');
         };
         document.getElementsByTagName('head')[0].appendChild(jq);
     } else {
         if (typeof (jQuery) == 'function') {
-            alert('jQuery (' + jQuery.fn.jquery + ') is already loaded!');
+            console.log('jQuery (' + jQuery.fn.jquery + ') is already loaded!');
         } else {
-            alert('jQuery is already loading...');
+            console.log('jQuery is already loading...');
         }
     };
-
 
 })([
     ''
