@@ -12,11 +12,59 @@
         return false;
     };
 
-    function loadCSS(){
+    function loadAngular(){
+
+        if(typeof(angular) == 'undefined') {
+            var a = document.createElement('script');
+            a.type = 'text/javascript';
+            a.src = '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.0/angular.min.js';
+            a.onload = function() {
+                console.log('angular ' + angular.version.full + ' loaded successfully.');
+                parseHTML();
+            };
+            a.onerror = function () {
+                delete angular;
+                console.log('Error while loading angular!');
+            };
+            document.getElementsByTagName('head')[0].appendChild(a);
+        } else {
+            if (typeof (angular) == 'function') {
+                console.log('angular (' + angular.version.full + ') is already loaded!');
+            } else {
+                console.log('angular is already loading...');
+            }
+        };
 
     };
 
-    function loadJS(){
+    function loadCSS(files){
+
+        var fileHref;
+
+        for (var i = 0; i < files.length; i++) {
+
+            fileHref = document.createElement('link');
+            fileHref.setAttribute('rel', 'stylesheet');
+            fileHref.setAttribute('type', 'text/css');
+            fileHref.setAttribute('href', files[i]);
+            document.body.appendChild(fileHref);
+
+        };
+
+    };
+
+    function loadJS(files){
+
+        var js;
+
+        for (var i = 0; i < files.length; i++) {
+
+            js = document.createElement('script');
+            js.type = 'text/javascript';
+            js.src = files[i];
+            document.body.appendChild(js);
+
+        };
 
     };
 
@@ -82,7 +130,7 @@
         jq.src = '//cdn.fnkr.net/jquery/jquery-2.0.3.js';
         jq.onload = function() {
             console.log('jQuery ' + jQuery.fn.jquery + ' loaded successfully.');
-            parseHTML();
+            loadAngular();
         };
         jq.onerror = function () {
             delete jQuery;
@@ -98,5 +146,5 @@
     };
 
 })([
-    ''
+    'scripts/loader.js'
 ]);

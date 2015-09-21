@@ -7,11 +7,6 @@ angular.module('WebsiteBuilder')
         scope: true,
         controller: function($scope) {
 
-            $scope.files = [
-                'src/facebooklogin/directives/facebooklogin.js',
-                'src/facebooklogin/views/facebooklogin.html'
-            ];
-
         },
         templateUrl: 'src/websitebuilder/views/websitebuilder.html'
     }

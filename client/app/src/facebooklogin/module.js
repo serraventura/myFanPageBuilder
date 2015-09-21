@@ -1,7 +1,6 @@
 'use strict';
 angular.module('FacebookLogin', [
-    'facebook',
-    ['bower_components/angular-facebook/lib/angular-facebook.js']
+    'facebook'
 ])
 
 .config(function(FacebookProvider) {
