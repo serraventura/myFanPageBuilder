@@ -5,9 +5,7 @@ angular.module('WebsiteBuilder')
     return {
         restrict:'AE',
         scope: true,
-        controller: function($scope) {
-
-        },
+        controller: 'WBController',
         templateUrl: 'src/websitebuilder/views/websitebuilder.html'
     }
 })

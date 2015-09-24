@@ -4,7 +4,6 @@ angular.module('BuilderApp', [
     'WebsiteBuilder'
 ])
 
-
 .controller('BuilderCtrl', function ($scope) {
 
 })
@@ -12,8 +11,7 @@ angular.module('BuilderApp', [
 .directive('builder', function(){
     return {
         restrict:'AE',
-        controller: function($scope) {
-        },
+        controller: 'BuilderCtrl',
         template:"<div><div website-builder></div></div>"
     }
 })
