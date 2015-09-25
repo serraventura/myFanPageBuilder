@@ -1,6 +1,7 @@
 'use strict';
 angular.module('FacebookLogin', [
-    'facebook'
+    'facebook',
+    'DataMod'
 ])
 
 .config(function(FacebookProvider) {

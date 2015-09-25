@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('FacebookLogin')
-    .controller('FBLoginController', function($scope, Facebook) {
+    .controller('FBLoginController', function($scope, Facebook, DataService) {
 
             var userIsConnected = false;
 
@@ -51,6 +51,7 @@ angular.module('FacebookLogin')
                     /**
                      * Using $scope.$apply since this happens outside angular framework.
                      */
+                    DataService.facebookData.push({user: response});
                     $scope.$apply(function() {
                         console.log('me: ', response);
                         $scope.user = response;
@@ -60,8 +61,8 @@ angular.module('FacebookLogin')
             };
 
             $scope.myAccounts = function() {
-                Facebook.api('/me/accounts?fields=link,about,name', function(response) {
-
+                Facebook.api('/me/accounts?fields=link,about,name,category', function(response) {
+                    DataService.facebookData.push({fanpages: response.data});
                     console.log('accounts: ', response);
 
                 });
@@ -81,6 +82,7 @@ angular.module('FacebookLogin')
              */
             $scope.$on('Facebook:statusChange', function(ev, data) {
                 console.log('Status: ', data);
+                DataService.facebookData.push(data);
                 if (data.status == 'connected') {
                     $scope.$apply(function() {
                         $scope.logged = true;
