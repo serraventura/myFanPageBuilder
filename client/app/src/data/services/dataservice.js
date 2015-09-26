@@ -7,7 +7,7 @@ angular.module('DataMod')
 
 		DataService.disableWatch = false;
 		DataService.loading = false;
-		DataService.facebookData = [];
+		DataService.facebookData = {};
 		DataService.params = {
 		};
 

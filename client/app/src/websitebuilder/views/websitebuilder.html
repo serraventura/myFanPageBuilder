@@ -4,4 +4,29 @@
         <div facebook-login></div>
     </div>
 
+    <div>
+
+        <form>
+
+            <input type="text" ng-model="facebookData.user.name">
+            <input type="text" ng-model="facebookData.user.email">
+
+        </form>
+
+    </div>
+
+    <div>
+
+        <ul>
+            <li ng-repeat="page in facebookData.fanpages track by $index">
+                <input type="radio" name="pageId" ng-model="chosenPage.id" ng-value="page.id"> - {{page.name}}
+            </li>
+        </ul>
+
+    </div>
+
+    <div>
+        <button>Save</button>
+    </div>
+
 </div>
