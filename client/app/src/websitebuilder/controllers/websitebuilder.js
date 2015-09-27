@@ -8,7 +8,9 @@ angular.module('WebsiteBuilder')
 
         $scope.save = function(){
 
-            WBService.saveData();
+            WBService.saveData().then(function (d) {
+                console.log(d)
+            });
 
         }
 

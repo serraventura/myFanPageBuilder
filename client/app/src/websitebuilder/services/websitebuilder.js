@@ -10,7 +10,7 @@ angular.module('WebsiteBuilder')
 
             var d = $q.defer();
 
-            var URL = 'https://staging-api.kurtosys.io/tools/ksys319/fundfinder/fsdfhsdkj'
+            var URL = 'http://localhost:3319/builder/signup'
 
             $http({
                 method: 'get',

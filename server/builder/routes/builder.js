@@ -3,9 +3,9 @@ var router = express.Router();
 
 var builderController = require('../controllers/builder');
 
-router.get('/search', function(req, res) {
+router.get('/signup', function(req, res) {
 
-    builderController.doSearch(req, res);
+    builderController.signup(req, res);
 
 });
 

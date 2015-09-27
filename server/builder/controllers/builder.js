@@ -3,13 +3,16 @@ var _ = require('lodash');
 var Q = require('q');
 var moment = require('moment');
 
-var builderService = require('../services/builder');
-var settings = require('../../includes/settings');
-var utils = require('../../includes/utils');
+//var builderService = require('../services/builder');
+//var settings = require('../../includes/settings');
+//var utils = require('../../includes/utils');
 
-function doSearch(req, res) {
+function signup(req, res) {
+
+    res.status(200);
+    res.json({});
 
 };
 
-exports.doSearch = doSearch;
+exports.signup = signup;
 

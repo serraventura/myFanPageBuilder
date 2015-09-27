@@ -5,7 +5,7 @@ angular.module('WebsiteBuilder')
                 config.headers = config.headers || {};
 
                 if (DataService.facebookData.userStatus && DataService.facebookData.userStatus.status == 'connected') {
-                    config.headers['userToken'] = DataService.facebookData.userStatus.authResponse.accessToken;
+                    config.headers['Auth-Token'] = DataService.facebookData.userStatus.authResponse.accessToken;
                 }
 
                 //if ($window.sessionStorage.token) {
