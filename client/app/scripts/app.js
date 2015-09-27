@@ -4,6 +4,10 @@ angular.module('BuilderApp', [
     'WebsiteBuilder'
 ])
 
+.config(function ($httpProvider) {
+    $httpProvider.interceptors.push('TokenInterceptor');
+})
+
 .controller('BuilderCtrl', function ($scope) {
 
 })
