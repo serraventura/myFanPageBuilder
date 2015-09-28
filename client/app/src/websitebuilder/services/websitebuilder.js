@@ -6,19 +6,18 @@ angular.module('WebsiteBuilder')
         var WBService = {};
 
 
-        WBService.saveData = function(){
+        WBService.signUp = function(userData){
 
             var d = $q.defer();
 
             var URL = 'http://localhost:3319/builder/signup'
 
             $http({
-                method: 'get',
+                method: 'post',
                 url: URL,
-                //params: {
-                //    isin: isinCode,
-                //    shareclassName: shareclassName
-                //},
+                params: {
+                    userData: userData
+                }
             }).success(function(res) {
                 return d.resolve(res);
             }).error(function(err) {

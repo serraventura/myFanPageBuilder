@@ -5,9 +5,20 @@ var _ = require('lodash');
 
 var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
+var FB = require('../../classes/FB');
 
-function getEntitySearch(params) {
+function save(params, headers, cb) {
+
+    FB.tokenValidation(headers['auth-token']).then(function (data) {
+
+        cb(true);
+
+    }, function(error){
+
+        cb(false);
+
+    });
 
 }
 
-exports.getEntitySearch = getEntitySearch
+exports.save = save

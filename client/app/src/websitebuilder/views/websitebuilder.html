@@ -17,7 +17,7 @@
 
     <div>
 
-        <ul>
+        <ul ng-if="isFanPagesAvailable()">
             <li ng-repeat="page in facebookData.fanpages track by $index">
                 <input type="radio" name="pageId" ng-model="chosenPage.id" ng-value="page.id"> - {{page.name}}
             </li>
@@ -25,8 +25,8 @@
 
     </div>
 
-    <div>
-        <button ng-click="save();">Save</button>
+    <div ng-if="isFanPagesAvailable()">
+        <button ng-click="signUp();">Save</button>
     </div>
 
 </div>

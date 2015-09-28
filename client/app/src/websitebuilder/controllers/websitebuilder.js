@@ -6,12 +6,23 @@ angular.module('WebsiteBuilder')
         $scope.facebookData = DataService.facebookData;
         $scope.chosenPage = {id: ''};
 
-        $scope.save = function(){
+        $scope.signUp = function(){
 
-            WBService.saveData().then(function (d) {
+            var userData = {
+                name: $scope.facebookData.user.name,
+                email: $scope.facebookData.user.email,
+                userId: $scope.facebookData.user.id,
+                pageId: $scope.chosenPage.id
+            };
+
+            WBService.signUp(userData).then(function (d) {
                 console.log(d)
             });
 
-        }
+        };
+
+        $scope.isFanPagesAvailable = function(){
+            return ($scope.facebookData.fanpages||[]).length>1;
+        };
 
     });
