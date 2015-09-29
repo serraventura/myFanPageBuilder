@@ -18,7 +18,7 @@ var userSchema = mongoose.model('User', {
         require: true
     },
     facebookPageId:{
-        type: String,
+        type: Array,
         require: true
     },
     active:   {
