@@ -16,7 +16,10 @@ angular.module('WebsiteBuilder')
                 method: 'post',
                 url: URL,
                 params: {
-                    userData: userData
+                    name: userData.name,
+                    email: userData.email,
+                    facebookUserId: userData.userId,
+                    pageId: userData.pageId
                 }
             }).success(function(res) {
                 return d.resolve(res);

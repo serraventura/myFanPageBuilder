@@ -1,6 +1,7 @@
 var express = require('express');
 var compression	= require('compression');
 var path = require('path');
+var mongoose = require("mongoose");
 var bodyParser = require('body-parser'); // deprecated!!!
 var _ = require('lodash');
 
@@ -13,6 +14,15 @@ app.all('*', function(req, res, next) {
   res.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization, Auth-Token');
   if ('OPTIONS' == req.method) return res.sendStatus(200);
   next();
+});
+
+//MongoDB configuration
+mongoose.connect('mongodb://localhost/myfpbuilder', function(err, res) {
+	if(err){
+		console.log('error connecting to MongoDB Database. ' + err);
+	} else {
+		console.log('Connected to Database');
+	};
 });
 
 var builder = require('./builder/routes/builder');

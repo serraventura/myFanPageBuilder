@@ -9,10 +9,15 @@ var builderService = require('../services/builder');
 
 function signup(req, res) {
 
-    builderService.save(req.query, req.headers, function(data){
+    builderService.save(req.query, req.headers, function(err, ret){
 
-        res.status(200);
-        res.json({});
+        if(!err && ret){
+            res.status(200);
+            res.json({msg: 'success'});
+        }else{
+            res.status(400);
+            res.json(err);
+        }
 
     });
 
