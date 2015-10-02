@@ -6,7 +6,7 @@ var _ = require('lodash');
 var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
 var FB = require('../../classes/FB');
-var User = require('../models/users').userSchema;
+var User = require('../../models/users').userSchema;
 
 function saveToDB(params, cb){
 

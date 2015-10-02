@@ -5,6 +5,9 @@ var mongoose = require("mongoose");
 var bodyParser = require('body-parser'); // deprecated!!!
 var _ = require('lodash');
 
+var builder = require('./builder/routes/builder');
+var cronJob = require('./classes/Template');
+
 var app = express();
 
 app.all('*', function(req, res, next) {
@@ -24,8 +27,6 @@ mongoose.connect('mongodb://localhost/myfpbuilder', function(err, res) {
 		console.log('Connected to Database');
 	};
 });
-
-var builder = require('./builder/routes/builder');
 
 app.use(compression());
 app.use(bodyParser.json());
@@ -79,5 +80,6 @@ if (app.get('env') === 'production') {
 }
 
 app.use('/builder', builder);
+cronJob.getNewTemplates().start();
 
 module.exports = app;

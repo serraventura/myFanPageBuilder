@@ -22,7 +22,8 @@ var userSchema = mongoose.model('User', {
         require: true
     },
     active:   {
-        type: Boolean
+        type: Boolean,
+        default: true
     },
     modified: {
         type: Date,
