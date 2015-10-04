@@ -31,6 +31,25 @@ angular.module('WebsiteBuilder')
 
         };
 
+        WBService.listTemplates = function(userData){
+
+            var d = $q.defer();
+
+            var URL = 'http://localhost:3319/builder/listtemplates'
+
+            $http({
+                method: 'get',
+                url: URL
+            }).success(function(res) {
+                return d.resolve(res);
+            }).error(function(err) {
+                return d.reject(err);
+            });
+
+            return d.promise;
+
+        };
+
         return WBService;
 
     });

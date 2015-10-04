@@ -29,4 +29,10 @@
         <button ng-click="signUp();">Save</button>
     </div>
 
+    <div>
+        <li ng-repeat="template in listTemplates track by $index">
+            <!--<img src="tem" />-->{{template.name}}
+        </li>
+    </div>
+
 </div>

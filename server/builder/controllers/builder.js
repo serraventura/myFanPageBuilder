@@ -37,5 +37,42 @@ function signup(req, res) {
 
 };
 
+function listTemplates(req, res) {
+
+    builderService.listTemplates(req.headers, function(err, ret){
+
+        var http;
+
+        if(!err && ret){
+
+            http = Return.http.ok;
+            http.customMessage = '';
+            http.response = ret;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else{
+
+            if( _.has(err, 'error', 'type', 'OAuthException') ){
+                http = Return.http.error;
+                http.customMessage = err.error.message;
+            }else{
+                http = Return.http.badRequest;
+                http.customMessage = err;
+            }
+
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }
+
+    });
+
+};
+
+exports.listTemplates = listTemplates;
 exports.signup = signup;
 

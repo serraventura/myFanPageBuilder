@@ -9,4 +9,10 @@ router.post('/signup', function(req, res) {
 
 });
 
+router.get('/listtemplates', function(req, res) {
+
+    builderController.listTemplates(req, res);
+
+});
+
 module.exports = router;

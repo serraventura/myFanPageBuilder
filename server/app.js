@@ -80,6 +80,7 @@ if (app.get('env') === 'production') {
 }
 
 app.use('/builder', builder);
+app.use('/templates', express.static(__dirname + '/_engine/myFanPage/dist/src/webcontent/views/templates/'));
 cronJob.getNewTemplates().start();
 
 module.exports = app;

@@ -5,6 +5,7 @@ angular.module('WebsiteBuilder')
         $scope.DataService = DataService;
         $scope.facebookData = DataService.facebookData;
         $scope.chosenPage = {id: ''};
+        $scope.listTemplates = [];
 
         $scope.signUp = function(){
 
@@ -16,7 +17,23 @@ angular.module('WebsiteBuilder')
             };
 
             WBService.signUp(userData).then(function (d) {
-                console.log(d)
+
+                if(d.statusCode == 200){
+
+                    WBService.listTemplates().then(function (d) {
+
+                        if(d.statusCode == 200){
+                            $scope.listTemplates = d.reponse;
+                        }
+
+                    }, function(err){
+                        console.error(err);
+                    });
+
+                };
+
+            }, function(err){
+                console.error(err);
             });
 
         };

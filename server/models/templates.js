@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var templateSchema = mongoose.model('Template', {
     name:{
-        type: Array,
+        type: String,
         require: true
     },
     active:   {

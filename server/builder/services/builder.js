@@ -7,6 +7,7 @@ var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
 var FB = require('../../classes/FB');
 var User = require('../../models/users').userSchema;
+var Template = require('../../models/templates').templateSchema;
 
 function saveToDB(params, cb){
 
@@ -58,4 +59,26 @@ function save(params, headers, cb) {
 
 }
 
+function listTemplates(headers, cb) {
+
+    FB.tokenValidation(headers['auth-token']).then(function (data) {
+
+        var query = Template.where({active: true});
+        query.find({}, function (err, templates) {
+
+            if(!err){
+                cb(err, templates);
+            }else{
+                cb(err, templates);
+            }
+
+        })
+
+    }, function(err){
+        cb(err, false);
+    });
+
+}
+
+exports.listTemplates = listTemplates;
 exports.save = save
