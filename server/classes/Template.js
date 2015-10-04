@@ -6,6 +6,7 @@ var Template = require('../models/templates').templateSchema;
 var getNewTemplates = function () {
 
     var job = new CronJob({
+        //cronTime: '* * * * * *',
         cronTime: '00 00 07 * * 1-7',
         onTick: function() {
 

@@ -23,7 +23,7 @@ angular.module('WebsiteBuilder')
                     WBService.listTemplates().then(function (d) {
 
                         if(d.statusCode == 200){
-                            $scope.listTemplates = d.reponse;
+                            $scope.listTemplates = d.response;
                         }
 
                     }, function(err){
