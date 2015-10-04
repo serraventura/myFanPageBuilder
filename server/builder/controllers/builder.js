@@ -4,6 +4,7 @@ var Q = require('q');
 var moment = require('moment');
 
 var builderService = require('../services/builder');
+var Return = require('../../classes/Return');
 //var settings = require('../../includes/settings');
 //var utils = require('../../includes/utils');
 
@@ -11,12 +12,25 @@ function signup(req, res) {
 
     builderService.save(req.query, req.headers, function(err, ret){
 
+        var http;
+
         if(!err && ret){
-            res.status(200);
-            res.json({msg: 'success'});
+
+            http = Return.http.ok;
+            http.customMessage = 'Step 1 data saved.';
+
+            res.status(http.statusCode);
+            res.json(http);
+
         }else{
-            res.status(400);
-            res.json(err);
+
+            http = Return.http.badRequest;
+            http.customMessage = 'Not possible to save data.';
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
         }
 
     });
