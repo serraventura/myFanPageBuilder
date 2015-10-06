@@ -5,7 +5,6 @@ angular.module('WebsiteBuilder')
 
         var WBService = {};
 
-
         WBService.signUp = function(userData){
 
             var d = $q.defer();
@@ -21,6 +20,26 @@ angular.module('WebsiteBuilder')
                     facebookUserId: userData.userId,
                     pageId: userData.pageId
                 }
+            }).success(function(res) {
+                return d.resolve(res);
+            }).error(function(err) {
+                return d.reject(err);
+            });
+
+            return d.promise;
+
+        };
+
+        WBService.getUser = function(params){
+
+            var d = $q.defer();
+
+            var URL = 'http://localhost:3319/builder/user'
+
+            $http({
+                method: 'get',
+                url: URL,
+                params: params
             }).success(function(res) {
                 return d.resolve(res);
             }).error(function(err) {

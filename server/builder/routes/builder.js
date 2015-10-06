@@ -15,4 +15,10 @@ router.get('/listtemplates', function(req, res) {
 
 });
 
+router.get('/user', function(req, res) {
+
+    builderController.getUser(req, res);
+
+});
+
 module.exports = router;

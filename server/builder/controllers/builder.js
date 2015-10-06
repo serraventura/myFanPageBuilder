@@ -8,7 +8,7 @@ var Return = require('../../classes/Return');
 //var settings = require('../../includes/settings');
 //var utils = require('../../includes/utils');
 
-function signup(req, res) {
+var signup = function(req, res) {
 
     builderService.save(req.query, req.headers, function(err, ret){
 
@@ -37,7 +37,7 @@ function signup(req, res) {
 
 };
 
-function listTemplates(req, res) {
+var listTemplates = function(req, res) {
 
     builderService.listTemplates(req.headers, function(err, ret){
 
@@ -57,6 +57,9 @@ function listTemplates(req, res) {
             if( _.has(err, 'error', 'type', 'OAuthException') ){
                 http = Return.http.error;
                 http.customMessage = err.error.message;
+            }else if( _.has(err, 'message') ){
+                http = Return.http.error;
+                http.customMessage = err.message;
             }else{
                 http = Return.http.badRequest;
                 http.customMessage = err;
@@ -73,6 +76,46 @@ function listTemplates(req, res) {
 
 };
 
+var getUser = function(req, res){
+
+    builderService.getUser(req.query, req.headers, function(err, user){
+
+        var http;
+
+        if(!err && user){
+
+            http = Return.http.ok;
+            http.customMessage = 'User Found.';
+            http.response = user;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else{
+
+            if( _.has(err, 'error', 'type', 'OAuthException') ) {
+                http = Return.http.error;
+                http.customMessage = err.error.message;
+            }else if( _.has(err, 'message') ){
+                http = Return.http.error;
+                http.customMessage = err.message;
+            }else{
+                http = Return.http.badRequest;
+                http.customMessage = err;
+            }
+
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }
+
+    });
+
+};
+
+exports.getUser = getUser;
 exports.listTemplates = listTemplates;
 exports.signup = signup;
 

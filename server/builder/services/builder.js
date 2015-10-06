@@ -6,49 +6,23 @@ var _ = require('lodash');
 var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
 var FB = require('../../classes/FB');
-var User = require('../../models/users').userSchema;
+var User = require('../../classes/User');
 var Template = require('../../models/templates').templateSchema;
 
-function saveToDB(params, cb){
-
-    var user = new User({
-        name: params.name,
-        username: params.email,
-        password: '',
-        facebookUserId: params.facebookUserId,
-        facebookPageId: params.pageId,
-        active: true
-    });
-
-    user.save(function(err) {
-
-        if (err) {
-            console.log('Error: ', err);
-        }else{
-            console.log('user saved');
-        }
-
-        cb(err, true);
-
-    });
-
-}
-
-function save(params, headers, cb) {
+var save = function(params, headers, cb) {
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        var query  = User.where({username: params.email});
-        query.findOne(function(err, user){
+        User.get({email: params.email}, function(err, user){
 
-            if(err) cb(err, false);
+            if(err) cb(err, user);
 
             if(!user){
-                saveToDB(params, function(err, ret){
+                User.save(params, function(err, ret){
                     cb(err, ret);
                 });
             }else{
-                cb('User already exist.', false);
+                cb('User already exist.', undefined);
             }
 
         });
@@ -59,7 +33,7 @@ function save(params, headers, cb) {
 
 }
 
-function listTemplates(headers, cb) {
+var listTemplates = function(headers, cb) {
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
@@ -80,5 +54,20 @@ function listTemplates(headers, cb) {
 
 }
 
+var getUser = function(params, headers, cb){
+
+    FB.tokenValidation(headers['auth-token']).then(function (data) {
+
+        User.get(params, function(err, user){
+            cb(err, user);
+        });
+
+    }, function(err){
+        cb(err, false);
+    });
+
+}
+
 exports.listTemplates = listTemplates;
-exports.save = save
+exports.getUser = getUser;
+exports.save = save;

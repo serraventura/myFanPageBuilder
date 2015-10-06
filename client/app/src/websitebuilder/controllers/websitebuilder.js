@@ -6,6 +6,8 @@ angular.module('WebsiteBuilder')
         $scope.facebookData = DataService.facebookData;
         $scope.chosenPage = {id: ''};
         $scope.listTemplates = [];
+        $scope.isUserRegistered = undefined;
+        $scope.isFanPageRegistered = false;
 
         $scope.signUp = function(){
 
@@ -39,7 +41,39 @@ angular.module('WebsiteBuilder')
         };
 
         $scope.isFanPagesAvailable = function(){
-            return ($scope.facebookData.fanpages||[]).length>1;
+            return (($scope.facebookData.fanpages||[]).length>1) && !$scope.isFanPageRegistered;
         };
+
+        $scope.$watch(function() {
+            return DataService.facebookData.userStatus;
+        }, function(newVal, oldVal) {
+            if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+
+                if (!DataService.disableWatch) {
+
+                    if(DataService.facebookData.userStatus.status == 'connected' && $scope.isUserRegistered == undefined){
+
+                        $scope.isUserRegistered = false;
+
+                        WBService.getUser({
+                            facebookUserId: DataService.facebookData.userStatus.authResponse.userID
+                        }).then(function(d){
+                            if(d.statusCode == 200){
+                                $scope.isUserRegistered = true;
+                                $scope.isFanPageRegistered = (d.response.facebookPageId.length>0);
+                            }
+
+                        });
+
+                    }
+
+                }else{
+                    $timeout(function() { DataService.disableWatch = false; });
+                };
+
+            };
+
+        }, true);
+
 
     });
