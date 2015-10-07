@@ -54,8 +54,8 @@ Object.defineProperty(_handledError, 'statusCode', {
     enumerable: true
 });
 
-Object.defineProperty(_handledError, 'handledStatusCode', {
-    value: 400,
+Object.defineProperty(_handledError, 'isError', {
+    value: true,
     writable: false,
     configurable: false,
     enumerable: true

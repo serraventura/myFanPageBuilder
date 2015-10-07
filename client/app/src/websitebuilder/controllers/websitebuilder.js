@@ -67,7 +67,7 @@ angular.module('WebsiteBuilder')
                             facebookUserId: DataService.facebookStatus.authResponse.userID
                         }).then(function(d){
 
-                            if(d.statusCode == 200 && !d.handledStatusCode){
+                            if(d.statusCode == 200 && !d.isError){
                                 $scope.isUserRegistered = true;
                                 $scope.isFanPageRegistered = (d.response.pages.length>0);
                             }else{
