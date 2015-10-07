@@ -4,6 +4,7 @@ angular.module('FacebookLogin')
     .controller('FBLoginController', function($scope, Facebook, DataService) {
 
             var userIsConnected = false;
+            $scope.isLoading = true;
 
             // Defining user logged status
             $scope.logged = false;
@@ -12,6 +13,8 @@ angular.module('FacebookLogin')
             Facebook.getLoginStatus(function(response) {
                 if (response.status == 'connected') {
                     userIsConnected = true;
+                }else{
+                    $scope.isLoading = false;
                 }
             });
 
@@ -57,6 +60,8 @@ angular.module('FacebookLogin')
                         $scope.user = response;
                     });
 
+                    $scope.isLoading = false;
+
                 });
             };
 
@@ -82,7 +87,7 @@ angular.module('FacebookLogin')
              */
             $scope.$on('Facebook:statusChange', function(ev, data) {
                 console.log('Status: ', data);
-                DataService.facebookData['userStatus'] = data;
+                DataService.facebookStatus = data;
                 if (data.status == 'connected') {
                     $scope.$apply(function() {
                         $scope.logged = true;
@@ -92,6 +97,7 @@ angular.module('FacebookLogin')
                 } else {
                     $scope.$apply(function() {
                         $scope.logged = false;
+                        $scope.isLoading = false;
                     });
                 }
 

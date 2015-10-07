@@ -4,8 +4,8 @@ angular.module('WebsiteBuilder')
             request: function (config) {
                 config.headers = config.headers || {};
 
-                if (DataService.facebookData.userStatus && DataService.facebookData.userStatus.status == 'connected') {
-                    config.headers['Auth-Token'] = DataService.facebookData.userStatus.authResponse.accessToken;
+                if (DataService.facebookStatus && DataService.facebookStatus.status == 'connected') {
+                    config.headers['Auth-Token'] = DataService.facebookStatus.authResponse.accessToken;
                 }
 
                 //if ($window.sessionStorage.token) {

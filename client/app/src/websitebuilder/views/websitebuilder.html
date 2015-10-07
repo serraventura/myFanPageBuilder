@@ -4,7 +4,7 @@
         <div facebook-login></div>
     </div>
 
-    <div>
+    <div ng-if="!isUserRegistered && !isLoading && isConnected">
 
         <form>
 
@@ -15,9 +15,9 @@
 
     </div>
 
-    <div>
+    <div ng-if="isFanPagesAvailable() && !isLoading && isConnected">
 
-        <ul ng-if="isFanPagesAvailable()">
+        <ul>
             <li ng-repeat="page in facebookData.fanpages track by $index">
                 <input type="radio" name="pageId" ng-model="chosenPage.id" ng-value="page.id"> - {{page.name}}
             </li>
@@ -25,14 +25,16 @@
 
     </div>
 
-    <div ng-if="isFanPagesAvailable()">
+    <div ng-if="!isUserRegistered && !isLoading && isConnected">
         <button ng-click="signUp();">Save</button>
     </div>
 
-    <div>
+    <div ng-if="isFanPagesAvailable() && !isUserRegistered && !isLoading && isConnected">
         <li ng-repeat="template in listTemplates track by $index">
-            <img src="http://localhost:3319/templates/{{template.name}}/{{template.name}}.jpeg" />
+            <img ng-if="template.name" src="http://localhost:3319/templates/{{template.name}}/{{template.name}}.jpeg" />
         </li>
     </div>
+
+    <div ng-show="isLoading && isConnected">Loading...</div>
 
 </div>

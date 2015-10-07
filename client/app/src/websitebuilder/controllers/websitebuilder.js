@@ -8,6 +8,22 @@ angular.module('WebsiteBuilder')
         $scope.listTemplates = [];
         $scope.isUserRegistered = undefined;
         $scope.isFanPageRegistered = false;
+        $scope.isLoading = true;
+        $scope.isConnected = false;
+
+        $scope.listTemplates = function(){
+
+            WBService.listTemplates().then(function (d) {
+
+                if(d.statusCode == 200){
+                    $scope.listTemplates = d.response;
+                }
+
+            }, function(err){
+                console.error(err);
+            });
+
+        }
 
         $scope.signUp = function(){
 
@@ -21,17 +37,8 @@ angular.module('WebsiteBuilder')
             WBService.signUp(userData).then(function (d) {
 
                 if(d.statusCode == 200){
-
-                    WBService.listTemplates().then(function (d) {
-
-                        if(d.statusCode == 200){
-                            $scope.listTemplates = d.response;
-                        }
-
-                    }, function(err){
-                        console.error(err);
-                    });
-
+                    $scope.isUserRegistered = true;
+                    $scope.isFanPageRegistered = true;
                 };
 
             }, function(err){
@@ -41,39 +48,54 @@ angular.module('WebsiteBuilder')
         };
 
         $scope.isFanPagesAvailable = function(){
-            return (($scope.facebookData.fanpages||[]).length>1) && !$scope.isFanPageRegistered;
+            return (($scope.facebookData.fanpages||[]).length>0) && !$scope.isFanPageRegistered;
         };
 
+        //TODO: calling twice  check why
         $scope.$watch(function() {
-            return DataService.facebookData.userStatus;
+            return DataService.facebookStatus.status;
         }, function(newVal, oldVal) {
-            if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+            if (newVal !== oldVal) {
 
                 if (!DataService.disableWatch) {
 
-                    if(DataService.facebookData.userStatus.status == 'connected' && $scope.isUserRegistered == undefined){
+                    if(DataService.facebookStatus.status == 'connected'){
 
-                        DataService.disableWatch = true;
+                        //DataService.disableWatch = true;
 
                         WBService.getUser({
-                            facebookUserId: DataService.facebookData.userStatus.authResponse.userID
+                            facebookUserId: DataService.facebookStatus.authResponse.userID
                         }).then(function(d){
-                            if(d.statusCode == 200){
-                                $scope.isUserRegistered = true;
-                                $scope.isFanPageRegistered = (d.response.facebookPageId.length>0);
-                            }
 
+                            if(d.statusCode == 200 && !d.handledStatusCode){
+                                $scope.isUserRegistered = true;
+                                $scope.isFanPageRegistered = (d.response.pages.length>0);
+                            }else{
+                                $scope.listTemplates();
+                            };
+
+                            $scope.isLoading = false;
+
+                        }, function(err){
+                            $scope.isLoading = false;
+                            $scope.listTemplates();
                         });
 
+                        $scope.isConnected = true;
+                    }else{
+                        $scope.isLoading = false;
+                        $scope.isConnected = false;
                     }
 
                 }else{
                     $timeout(function() { DataService.disableWatch = false; });
                 };
 
-            };
+            }else{
+                $scope.isConnected = false;
+            }
 
-        }, true);
+        });
 
 
     });
