@@ -15,7 +15,10 @@ var save = function(params, headers, cb) {
 
         User.get({email: params.email}, function(err, user){
 
-            if(err) cb(err, user);
+            if(err) {
+                cb(err, user);
+                return false;
+            }
 
             if(!user){
                 User.save(params, function(err, ret){
@@ -58,8 +61,8 @@ var getUser = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        User.get(params, function(err, user){
-            cb(err, user);
+        User.get(params, function(err, user, msg){
+            cb(err, user, msg);
         });
 
     }, function(err){

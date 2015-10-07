@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
 var userSchema = mongoose.model('User', {
     name:{
@@ -11,16 +12,16 @@ var userSchema = mongoose.model('User', {
     },
     password:{
         type: String,
-        require: true
+        require: false
     },
-    facebookUserId:{
+    _facebookUserId:{
         type: String,
         require: true
     },
-    facebookPageId:{
-        type: Array,
-        require: true
-    },
+    pages: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserPage'
+    }],
     active:   {
         type: Boolean,
         default: true

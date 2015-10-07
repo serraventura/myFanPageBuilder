@@ -1,4 +1,5 @@
 var User = require('../models/users').userSchema;
+var UserPage = require('../models/userPages').userPageSchema;
 
 var get = function(params, cb){
 
@@ -9,7 +10,7 @@ var get = function(params, cb){
         if(params.email){
             objQuery = {username: params.email};
         }else if(params.facebookUserId){
-            objQuery = {facebookUserId: params.facebookUserId};
+            objQuery = {_facebookUserId: params.facebookUserId};
         }
 
         if(!objQuery){
@@ -24,10 +25,13 @@ var get = function(params, cb){
     var query  = User.where(objQuery);
     query.findOne(function(err, user){
 
-        if(err) cb(err, user);
+        if(err){
+            cb(err, user);
+            return false;
+        }
 
         if(!user){
-            cb('User not found.', user);
+            cb(err, user, 'User not found.');
         }else{
             cb(err, user);
         }
@@ -41,21 +45,44 @@ var save = function(params, cb){
     var user = new User({
         name: params.name,
         username: params.email,
-        password: '',
-        facebookUserId: params.facebookUserId,
-        facebookPageId: params.pageId,
-        active: true
+        _facebookUserId: params.facebookUserId
     });
 
+    var userPage = new UserPage({
+        _facebookUserId: user._facebookUserId,
+        facebookPageId: params.pageId,
+        templateName: 'default'//params.templateName
+    });
+
+    user.pages.push(userPage); //push ObjectId
     user.save(function(err) {
 
         if (err) {
-            console.log('Error: ', err);
-        }else{
-            console.log('user saved');
+            cb(err, undefined);
+            return false;
         }
 
-        cb(err, true);
+        userPage.save(function(err){
+
+            if (err) {
+                cb(err, undefined);
+                return false;
+            }
+
+            User.findOne({
+                _facebookUserId: user._facebookUserId
+            }).populate('pages').exec(function (err, user) {
+
+                if (err) {
+                    cb(err, undefined);
+                    return false;
+                }
+
+                cb(err, user);
+
+            });
+
+        });
 
     });
 

@@ -78,15 +78,24 @@ var listTemplates = function(req, res) {
 
 var getUser = function(req, res){
 
-    builderService.getUser(req.query, req.headers, function(err, user){
+    builderService.getUser(req.query, req.headers, function(err, user, msg){
 
         var http;
 
-        if(!err && user){
+        if(!err && user) {
 
             http = Return.http.ok;
             http.customMessage = 'User Found.';
             http.response = user;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else if(!err && !user && msg){
+
+            http = Return.http.handledError;
+            http.customMessage = msg;
+            http.response = msg;
 
             res.status(http.statusCode);
             res.json(http);

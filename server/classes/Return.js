@@ -45,6 +45,52 @@ Object.defineProperty(_ok, 'redirect', {
 // OK --------------------------
 
 
+var _handledError = {};
+
+Object.defineProperty(_handledError, 'statusCode', {
+    value: 200,
+    writable: false,
+    configurable: false,
+    enumerable: true
+});
+
+Object.defineProperty(_handledError, 'status', {
+    value: 'success',
+    writable: false,
+    configurable: false,
+    enumerable: true
+});
+
+Object.defineProperty(_handledError, 'message', {
+    value: 'The request was fulfilled with an expected error.',
+    writable: false,
+    configurable: false,
+    enumerable: true
+});
+
+Object.defineProperty(_handledError, 'customMessage', {
+    value: '',
+    writable: true,
+    configurable: true,
+    enumerable: true
+});
+
+Object.defineProperty(_handledError, 'response', {
+    value: '',
+    writable: true,
+    configurable: true,
+    enumerable: true
+});
+
+Object.defineProperty(_handledError, 'redirect', {
+    value: '',
+    writable: true,
+    configurable: true,
+    enumerable: true
+});
+
+// _handledError --------------------------
+
 var _error = {};
 
 Object.defineProperty(_error, 'statusCode', {
@@ -211,6 +257,13 @@ Object.defineProperty(_return, 'notFound', {
 
 Object.defineProperty(_return, 'badRequest', {
     value: _badRequest,
+    writable: false,
+    configurable: false,
+    enumerable: true
+});
+
+Object.defineProperty(_return, 'handledError', {
+    value: _handledError,
     writable: false,
     configurable: false,
     enumerable: true
