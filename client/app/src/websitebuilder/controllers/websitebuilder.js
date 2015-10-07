@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('WebsiteBuilder')
-    .controller('WBController', function($scope, DataService, WBService) {
+    .controller('WBController', function($scope, DataService, WBService, $timeout) {
         $scope.DataService = DataService;
         $scope.facebookData = DataService.facebookData;
         $scope.chosenPage = {id: ''};
@@ -53,7 +53,7 @@ angular.module('WebsiteBuilder')
 
                     if(DataService.facebookData.userStatus.status == 'connected' && $scope.isUserRegistered == undefined){
 
-                        $scope.isUserRegistered = false;
+                        DataService.disableWatch = true;
 
                         WBService.getUser({
                             facebookUserId: DataService.facebookData.userStatus.authResponse.userID
