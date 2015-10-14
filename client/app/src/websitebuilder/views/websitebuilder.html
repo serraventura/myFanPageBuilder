@@ -4,7 +4,7 @@
         <div facebook-login></div>
     </div>
 
-    <div ng-if="!isUserRegistered && !isLoading && isConnected">
+    <div ng-show="!isUserRegistered && !isLoading && isConnected">
 
         <form>
 
@@ -15,7 +15,7 @@
 
     </div>
 
-    <div ng-if="isFanPagesAvailable() && !isLoading && isConnected">
+    <div ng-show="isFanPagesAvailable() && !isLoading && isConnected && !isUserRegistered">
 
         <ul>
             <li ng-repeat="page in facebookData.fanpages track by $index">
@@ -25,12 +25,13 @@
 
     </div>
 
-    <div ng-if="!isUserRegistered && !isLoading && isConnected">
+    <div ng-show="!isUserRegistered && !isLoading && isConnected">
         <button ng-click="signUp();">Save</button>
     </div>
 
-    <div ng-if="isFanPagesAvailable() && !isUserRegistered && !isLoading && isConnected">
-        <li ng-repeat="template in listTemplates track by $index">
+    <div ng-show="isFanPageRegistered && isUserRegistered && !isLoading && isConnected">
+    <!--<div>-->
+        <li ng-repeat="template in listThumbTemplates track by $index">
             <img ng-if="template.name" src="http://localhost:3319/templates/{{template.name}}/{{template.name}}.jpeg" />
         </li>
     </div>

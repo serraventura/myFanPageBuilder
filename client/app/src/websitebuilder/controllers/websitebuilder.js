@@ -5,7 +5,7 @@ angular.module('WebsiteBuilder')
         $scope.DataService = DataService;
         $scope.facebookData = DataService.facebookData;
         $scope.chosenPage = {id: ''};
-        $scope.listTemplates = [];
+        $scope.listThumbTemplates = [];
         $scope.isUserRegistered = undefined;
         $scope.isFanPageRegistered = false;
         $scope.isLoading = true;
@@ -16,7 +16,7 @@ angular.module('WebsiteBuilder')
             WBService.listTemplates().then(function (d) {
 
                 if(d.statusCode == 200){
-                    $scope.listTemplates = d.response;
+                    $scope.listThumbTemplates = d.response;
                 }
 
             }, function(err){
@@ -39,6 +39,7 @@ angular.module('WebsiteBuilder')
                 if(d.statusCode == 200){
                     $scope.isUserRegistered = true;
                     $scope.isFanPageRegistered = true;
+                    $scope.listTemplates();
                 };
 
             }, function(err){
@@ -70,8 +71,11 @@ angular.module('WebsiteBuilder')
                             if(d.statusCode == 200 && !d.isError){
                                 $scope.isUserRegistered = true;
                                 $scope.isFanPageRegistered = (d.response.pages.length>0);
-                            }else{
-                                $scope.listTemplates();
+
+                                if(!_.first(d.response.pages).template){
+                                    $scope.listTemplates();
+                                }
+
                             };
 
                             $scope.isLoading = false;

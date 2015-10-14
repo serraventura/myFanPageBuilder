@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var User = require('../models/users').userSchema;
 var UserPage = require('../models/userPages').userPageSchema;
 
@@ -10,7 +12,7 @@ var get = function(params, cb){
         if(params.email){
             objQuery = {username: params.email};
         }else if(params.facebookUserId){
-            objQuery = {_facebookUserId: params.facebookUserId};
+            objQuery = {facebookUserId: params.facebookUserId};
         }
 
         if(!objQuery){
@@ -45,44 +47,23 @@ var save = function(params, cb){
     var user = new User({
         name: params.name,
         username: params.email,
-        _facebookUserId: params.facebookUserId
+        facebookUserId: params.facebookUserId,
+        pages: [{
+            pageId: params.pageId,
+            template: undefined
+        }]
     });
 
-    var userPage = new UserPage({
-        _facebookUserId: user._facebookUserId,
-        facebookPageId: params.pageId,
-        templateName: 'default'//params.templateName
-    });
-
-    user.pages.push(userPage); //push ObjectId
-    user.save(function(err) {
+    user.save(function(err, ret) {
 
         if (err) {
             cb(err, undefined);
             return false;
         }
 
-        userPage.save(function(err){
+        var retObj = _.pick(ret.toObject(), ['name', 'username', 'facebookUserId', 'pages']);
 
-            if (err) {
-                cb(err, undefined);
-                return false;
-            }
-
-            User.findOne({
-                _facebookUserId: user._facebookUserId
-            }).populate('pages').exec(function (err, user) {
-
-                if (err) {
-                    cb(err, undefined);
-                    return false;
-                }
-
-                cb(err, user);
-
-            });
-
-        });
+        cb(err, retObj);
 
     });
 

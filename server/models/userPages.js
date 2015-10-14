@@ -11,7 +11,7 @@ var userPageSchema = mongoose.model('UserPage', {
     },
     templateName:{
         type: String,
-        require: true
+        require: false
     },
     active:   {
         type: Boolean,

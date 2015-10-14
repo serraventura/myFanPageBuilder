@@ -18,6 +18,7 @@ var signup = function(req, res) {
 
             http = Return.http.ok;
             http.customMessage = 'Step 1 data saved.';
+            http.response = ret;
 
             res.status(http.statusCode);
             res.json(http);
