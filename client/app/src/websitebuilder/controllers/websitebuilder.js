@@ -48,6 +48,30 @@ angular.module('WebsiteBuilder')
 
         };
 
+        var checkStatus = function(){
+
+            WBService.getUser({
+                facebookUserId: DataService.facebookStatus.authResponse.userID
+            }).then(function(d){
+
+                if(d.statusCode == 200 && !d.isError){
+                    $scope.isUserRegistered = true;
+                    $scope.isFanPageRegistered = (d.response.pages.length>0);
+
+                    if(!_.first(d.response.pages).template){
+                        $scope.listTemplates();
+                    }
+
+                };
+
+                $scope.isLoading = false;
+
+            }, function(err){
+                $scope.isLoading = false;
+            });
+
+        };
+
         $scope.isFanPagesAvailable = function(){
             return (($scope.facebookData.fanpages||[]).length>0) && !$scope.isFanPageRegistered;
         };
@@ -56,35 +80,14 @@ angular.module('WebsiteBuilder')
         $scope.$watch(function() {
             return DataService.facebookStatus.status;
         }, function(newVal, oldVal) {
-            if (newVal !== oldVal) {
+
+            //if (newVal !== oldVal) {
+            if (newVal === 'connected') { // testing
 
                 if (!DataService.disableWatch) {
 
                     if(DataService.facebookStatus.status == 'connected'){
-
-                        //DataService.disableWatch = true;
-
-                        WBService.getUser({
-                            facebookUserId: DataService.facebookStatus.authResponse.userID
-                        }).then(function(d){
-
-                            if(d.statusCode == 200 && !d.isError){
-                                $scope.isUserRegistered = true;
-                                $scope.isFanPageRegistered = (d.response.pages.length>0);
-
-                                if(!_.first(d.response.pages).template){
-                                    $scope.listTemplates();
-                                }
-
-                            };
-
-                            $scope.isLoading = false;
-
-                        }, function(err){
-                            $scope.isLoading = false;
-                            $scope.listTemplates();
-                        });
-
+                        checkStatus();
                         $scope.isConnected = true;
                     }else{
                         $scope.isLoading = false;
