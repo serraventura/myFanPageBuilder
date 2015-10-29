@@ -1,4 +1,6 @@
 var _ = require('lodash');
+var fs = require('fs-extra');
+var path = require('path');
 
 var User = require('../models/users').userSchema;
 var UserPage = require('../models/userPages').userPageSchema;
@@ -69,5 +71,65 @@ var save = function(params, cb){
 
 }
 
+var createUserSpace = function(pageName, cb) {
+
+    var srcBasePath = path.join(__dirname + '/../_engine/myFanPage/dist');
+    var dist = path.join(__dirname + '/../live-pages/'+pageName);
+
+
+    var symLinkMaker = function (symLinkCb) {
+
+        var symLinks = [
+            '/scripts',
+            '/styles',
+            '/404.html',
+            '/index.html',
+            '/src/core',
+            '/src/webcontent',
+            '/src/**.scripts.js'
+        ];
+
+        var ensureSymLinkLoop = function (i) {
+
+            if( i < symLinks.length ) {
+
+                fs.ensureSymlink( srcBasePath+symLinks[i], dist+symLinks[i], function(err){
+
+                    if(err){
+                        symLinkCb(true, err);
+                        return;
+                    }else{
+                        ensureSymLinkLoop(i+1);
+                    }
+                });
+
+            }else{
+                symLinkCb(false, 'success');
+                return;
+            }
+
+        };
+
+        ensureSymLinkLoop(0);
+
+    };
+
+    fs.copy(srcBasePath+'/src/config', dist+'/src/config', function (err) {
+
+        if(err){
+            cb(true, err);
+        }else{
+
+            symLinkMaker(function (err, d) {
+                cb(err, d);
+            });
+
+        }
+
+    });
+
+}
+
+exports.createUserSpace = createUserSpace;
 exports.get = get;
 exports.save = save;

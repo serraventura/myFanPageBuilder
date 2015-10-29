@@ -22,7 +22,23 @@ var save = function(params, headers, cb) {
 
             if(!user){
                 User.save(params, function(err, ret){
-                    cb(err, ret);
+
+                    if(!err){
+
+                        User.createUserSpace(ret.facebookUserId, function(err, info) {
+
+                            if(!err){
+                                cb(err, ret);
+                            }else{
+                                cb(err, info);
+                            }
+
+                        });
+
+                    }else{
+                        cb(err, ret);
+                    }
+
                 });
             }else{
                 cb('User already exist.', undefined);

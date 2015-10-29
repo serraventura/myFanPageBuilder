@@ -11,17 +11,18 @@
     "compression": "1.2.*",
     "connect-cache": "0.2.*",
     "cookie-parser": "1.0.*",
+    "cron": "^1.0.9",
     "debug": "0.7.*",
     "express": ">=4.0.*",
     "express-session": "1.9.*",
+    "fs-extra": "^0.26.0",
     "lodash": "^3.6.0",
     "moment": "^2.10.3",
+    "mongoose": "^4.1.*",
     "morgan": "1.0.*",
     "nodemon": "~1.2.1",
     "numeral": "^1.5.3",
     "q": "1.1.*",
-    "request": "^2.54.0",
-    "mongoose": "^4.1.*",
-    "cron": "^1.0.9"
+    "request": "^2.54.0"
   }
 }
