@@ -76,6 +76,8 @@ var createUserSpace = function(pageName, cb) {
     var srcBasePath = path.join(__dirname + '/../_engine/myFanPage/dist');
     var dist = path.join(__dirname + '/../live-pages/'+pageName);
 
+    var dirItems = [];
+    var scriptSource;
 
     var symLinkMaker = function (symLinkCb) {
 
@@ -86,8 +88,10 @@ var createUserSpace = function(pageName, cb) {
             '/index.html',
             '/src/core',
             '/src/webcontent',
-            '/src/**.scripts.js'
+            '/src'
         ];
+
+        symLinks.push(scriptSource);
 
         var ensureSymLinkLoop = function (i) {
 
@@ -114,17 +118,35 @@ var createUserSpace = function(pageName, cb) {
 
     };
 
-    fs.copy(srcBasePath+'/src/config', dist+'/src/config', function (err) {
+    var copyConfigFile = function () {
 
-        if(err){
-            cb(true, err);
-        }else{
+        fs.copy(srcBasePath+'/src/config', dist+'/src/config', function (err) {
 
-            symLinkMaker(function (err, d) {
-                cb(err, d);
-            });
+            if(err){
+                cb(true, err);
+            }else{
 
-        }
+                symLinkMaker(function (err, d) {
+                    cb(err, d);
+                });
+
+            }
+
+        });
+
+    }
+
+    //TODO: doing the walk just to get scripts.js. Need to find way to get the file to a symLink
+    fs.walk(srcBasePath).on('data', function (item) {
+        dirItems.push(item.path);
+    }).on('end', function () {
+
+        scriptSource = dirItems.filter(function (i) {
+            return i.search('scripts.js') != -1;
+        })[0];
+
+        scriptSource = scriptSource.replace(srcBasePath, '');
+        copyConfigFile();
 
     });
 
