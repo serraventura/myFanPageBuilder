@@ -33,7 +33,7 @@
     <!--<div>-->
         <li ng-repeat="template in listThumbTemplates track by $index">
             <img ng-if="template.name" ng-src="http://localhost:3319/imagetemplates/{{template.name}}/{{template.name}}.jpg" />
-            <button>Choose</button>
+            <button ng-click="chooseTemplate(template)">Choose</button>
         </li>
     </div>
 

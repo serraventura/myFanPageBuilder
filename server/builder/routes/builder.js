@@ -9,6 +9,12 @@ router.post('/signup', function(req, res) {
 
 });
 
+router.get('/gettemplate', function(req, res) {
+
+    builderController.getTemplate(req, res);
+
+});
+
 router.get('/listtemplates', function(req, res) {
 
     builderController.listTemplates(req, res);

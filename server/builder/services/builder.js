@@ -2,6 +2,8 @@ var express = require('express');
 var request = require('request');
 var Q = require('q');
 var _ = require('lodash');
+var fs = require('fs-extra');
+var path = require('path');
 
 var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
@@ -25,10 +27,7 @@ var save = function(params, headers, cb) {
 
                     if(!err){
 
-                        var link = _.get(JSON.parse(params.pageDetails||{}), ['link'], '');
-                        var pageName = link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
-
-                        User.createUserSpace(pageName, function(err, info) {
+                        User.createUserSpace(params.pageName, function(err, info) {
 
                             if(!err){
                                 cb(err, ret);
@@ -90,6 +89,33 @@ var getUser = function(params, headers, cb){
 
 }
 
+var getTemplate = function(params, headers, cb){
+
+    FB.tokenValidation(headers['auth-token']).then(function (data) {
+
+        var srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
+        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.js');
+
+        fs.copy(srcBasePath, dist, function (err) {
+
+            if(err){
+                cb(true, err);
+            }else{
+                cb(err, {
+                    path: 'templates/'+params.pageName,
+                    details: params
+                });
+            };
+
+        });
+
+    }, function(err){
+        cb(err, false);
+    });
+
+}
+
+exports.getTemplate = getTemplate;
 exports.listTemplates = listTemplates;
 exports.getUser = getUser;
 exports.save = save;

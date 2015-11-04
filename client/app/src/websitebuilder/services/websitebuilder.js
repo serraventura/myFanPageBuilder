@@ -51,6 +51,29 @@ angular.module('WebsiteBuilder')
 
         };
 
+        WBService.getTemplate = function(name, pageName){
+
+            var d = $q.defer();
+
+            var URL = 'http://localhost:3319/builder/gettemplate'
+
+            $http({
+                method: 'get',
+                url: URL,
+                params: {
+                    templateName: name,
+                    pageName: pageName
+                }
+            }).success(function(res) {
+                return d.resolve(res);
+            }).error(function(err) {
+                return d.reject(err);
+            });
+
+            return d.promise;
+
+        };
+
         WBService.listTemplates = function(userData){
 
             var d = $q.defer();

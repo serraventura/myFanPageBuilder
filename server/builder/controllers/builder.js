@@ -125,6 +125,55 @@ var getUser = function(req, res){
 
 };
 
+var getTemplate = function(req, res){
+
+    builderService.getTemplate(req.query, req.headers, function(err, template, msg){
+
+        var http;
+
+        if(!err && template) {
+
+            http = Return.http.ok;
+            http.customMessage = 'Template Found.';
+            http.response = template;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else if(!err && !template && msg){
+
+            http = Return.http.handledError;
+            http.customMessage = msg;
+            http.response = msg;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else{
+
+            if( _.has(err, 'error', 'type', 'OAuthException') ) {
+                http = Return.http.error;
+                http.customMessage = err.error.message;
+            }else if( _.has(err, 'message') ){
+                http = Return.http.error;
+                http.customMessage = err.message;
+            }else{
+                http = Return.http.badRequest;
+                http.customMessage = err;
+            }
+
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }
+
+    });
+
+};
+
+exports.getTemplate = getTemplate;
 exports.getUser = getUser;
 exports.listTemplates = listTemplates;
 exports.signup = signup;

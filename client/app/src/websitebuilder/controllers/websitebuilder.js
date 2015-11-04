@@ -11,41 +11,14 @@ angular.module('WebsiteBuilder')
         $scope.isLoading = true;
         $scope.isConnected = false;
 
-        $scope.listTemplates = function(){
+        var getPageDetails = function (pageId, fanPages) {
 
-            WBService.listTemplates().then(function (d) {
+            var pageDetails = _.get(_.where(fanPages, {id: pageId}), ['0'], undefined)
+            var pageName = _.get(pageDetails, ['link'], '').match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
 
-                if(d.statusCode == 200){
-                    $scope.listThumbTemplates = d.response;
-                }
+            pageDetails['pageName'] = pageName;
 
-            }, function(err){
-                console.error(err);
-            });
-
-        }
-
-        $scope.signUp = function(){
-
-            var userData = {
-                name: $scope.facebookData.user.name,
-                email: $scope.facebookData.user.email,
-                userId: $scope.facebookData.user.id,
-                pageId: $scope.chosenPage.id,
-                pageDetails: _.get(_.where($scope.facebookData.fanpages, {id: $scope.chosenPage.id}), ['0'], undefined)
-            };
-
-            WBService.signUp(userData).then(function (d) {
-
-                if(d.statusCode == 200){
-                    $scope.isUserRegistered = true;
-                    $scope.isFanPageRegistered = true;
-                    $scope.listTemplates();
-                };
-
-            }, function(err){
-                console.error(err);
-            });
+            return pageDetails;
 
         };
 
@@ -58,6 +31,7 @@ angular.module('WebsiteBuilder')
                 if(d.statusCode == 200 && !d.isError){
                     $scope.isUserRegistered = true;
                     $scope.isFanPageRegistered = (d.response.pages.length>0);
+                    $scope.currentFanPageId = _.first( d.response.pages).pageId;
 
                     if(!_.first(d.response.pages).template){
                         $scope.listTemplates();
@@ -69,6 +43,56 @@ angular.module('WebsiteBuilder')
 
             }, function(err){
                 $scope.isLoading = false;
+            });
+
+        };
+
+        $scope.chooseTemplate = function (template) {
+
+            var pageDetails = getPageDetails($scope.currentFanPageId, $scope.facebookData.fanpages);
+
+            WBService.getTemplate(template.name, pageDetails.pageName).then(function (d) {
+
+            });
+
+        };
+
+        $scope.listTemplates = function(){
+
+            WBService.listTemplates().then(function (d) {
+
+                if(d.statusCode == 200){
+                    $scope.listThumbTemplates = d.response;
+                }
+
+            }, function(err){
+                console.error(err);
+            });
+
+        };
+
+        $scope.signUp = function(){
+
+            $scope.currentFanPageId = $scope.chosenPage.id;
+
+            var userData = {
+                name: $scope.facebookData.user.name,
+                email: $scope.facebookData.user.email,
+                userId: $scope.facebookData.user.id,
+                pageId: $scope.chosenPage.id,
+                pageDetails: getPageDetails($scope.currentFanPageId, $scope.facebookData.fanpages)
+            };
+
+            WBService.signUp(userData).then(function (d) {
+
+                if(d.statusCode == 200){
+                    $scope.isUserRegistered = true;
+                    $scope.isFanPageRegistered = true;
+                    $scope.listTemplates();
+                };
+
+            }, function(err){
+                console.error(err);
             });
 
         };
