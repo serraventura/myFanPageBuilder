@@ -18,7 +18,8 @@ angular.module('WebsiteBuilder')
                     name: userData.name,
                     email: userData.email,
                     facebookUserId: userData.userId,
-                    pageId: userData.pageId
+                    pageId: userData.pageId,
+                    pageDetails: userData.pageDetails
                 }
             }).success(function(res) {
                 return d.resolve(res);

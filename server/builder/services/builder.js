@@ -25,7 +25,10 @@ var save = function(params, headers, cb) {
 
                     if(!err){
 
-                        User.createUserSpace(ret.facebookUserId, function(err, info) {
+                        var link = _.get(JSON.parse(params.pageDetails||{}), ['link'], '');
+                        var pageName = link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+
+                        User.createUserSpace(pageName, function(err, info) {
 
                             if(!err){
                                 cb(err, ret);

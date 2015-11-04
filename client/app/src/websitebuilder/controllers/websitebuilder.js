@@ -31,7 +31,8 @@ angular.module('WebsiteBuilder')
                 name: $scope.facebookData.user.name,
                 email: $scope.facebookData.user.email,
                 userId: $scope.facebookData.user.id,
-                pageId: $scope.chosenPage.id
+                pageId: $scope.chosenPage.id,
+                pageDetails: _.get(_.where($scope.facebookData.fanpages, {id: $scope.chosenPage.id}), ['0'], undefined)
             };
 
             WBService.signUp(userData).then(function (d) {
