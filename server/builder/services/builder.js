@@ -27,7 +27,13 @@ var save = function(params, headers, cb) {
 
                     if(!err){
 
-                        User.createUserSpace(params.pageName, function(err, info) {
+                        try{
+                            var pageDetails = JSON.parse(params.pageDetails);
+                        }catch(err){
+                            cb(err, undefined);
+                        };
+
+                        User.createUserSpace(pageDetails.pageName, function(err, info) {
 
                             if(!err){
                                 cb(err, ret);

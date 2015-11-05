@@ -53,6 +53,11 @@ angular.module('WebsiteBuilder')
 
             WBService.getTemplate(template.name, pageDetails.pageName).then(function (d) {
 
+                $('#templateContainer').attr('src', 'http://localhost:3319/' + d.response.path);
+                //$.get('http://localhost:3319/' + d.response.path, function (d) {
+                //    $('#templateContainer').text(d);
+                //});
+
             });
 
         };
