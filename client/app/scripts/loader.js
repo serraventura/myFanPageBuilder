@@ -87,7 +87,8 @@
                 $script(scriptArr, 'FilesLoaded');
                 $script.ready('FilesLoaded', function() {
                     // when all is done, execute bootstrap angular application
-                    angular.bootstrap(document, ['BuilderApp']);
+
+                    angular.bootstrap($('.widget-builder'), ['BuilderApp']);
                 });
 
             }

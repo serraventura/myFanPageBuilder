@@ -53,10 +53,24 @@ angular.module('WebsiteBuilder')
 
             WBService.getTemplate(template.name, pageDetails.pageName).then(function (d) {
 
-                $('#templateContainer').attr('src', 'http://localhost:3319/' + d.response.path);
-                //$.get('http://localhost:3319/' + d.response.path, function (d) {
-                //    $('#templateContainer').text(d);
-                //});
+                //$('#templateContainer').attr('src', 'http://localhost:3319/' + d.response.path);
+                $.get('http://localhost:3319/' + d.response.path, function (d) {
+
+                    d = d.replace('styles/main.css', 'http://localhost:3319/templates/myfanpageapp/styles/main.css');
+                    d = d.replace('scripts/vendor.js', 'http://localhost:3319/templates/myfanpageapp/scripts/vendor.js');
+                    d = d.replace('src/scripts.js', 'http://localhost:3319/templates/myfanpageapp/src/scripts.js');
+                    d = d.replace('src/config/config.js', 'http://localhost:3319/templates/myfanpageapp/src/config/config.js');
+                    d = d.replace('ng-app', 'id');
+
+                    $('#templateContainer2').html(d);
+
+                    setTimeout(function () {
+                        var container = $('#templateContainer2').find('.myfp__container');
+                        $('#templateContainer').html(container);
+                        angular.bootstrap($('#templateContainer'), ['myFanPageApp']);
+                    }, 800);
+
+                });
 
             });
 
