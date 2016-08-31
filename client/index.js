@@ -1,13 +1,20 @@
 import * as React from "react";
+
 import {render} from "react-dom";
+import {Router, Route, hashHistory} from "react-router";
+import {Provider} from "react-redux";
+import {createStore} from "redux";
 
-const HW = (props) => {
+import rootReducer from "./reducers/root";
+import App from "./components/app";
 
-    return (<h1>Hello W!</h1>);
-
-};
+const store = createStore(rootReducer);
 
 render(
-	<HW />,
+	<Provider store={store}>
+		<Router history={hashHistory}>
+			<Route path="/" component={App}></Route>
+		</Router>
+	</Provider>,
 	document.getElementById("app")
 );
