@@ -1,7 +1,11 @@
 import * as React from "react";
+import Builder from "../containers/builder";
 
 const App = (props) => (
-    <h1>Hello W!</h1>
+    <div>
+        <h1>Hello W!</h1>
+        <Builder></Builder>
+    </div>
 );
 
 export default App;

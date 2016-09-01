@@ -2,12 +2,17 @@ import {
     FETCH
 } from "../actions/constants";
 
-export function facebookDataReducer(state = null, action) {
+let defaultState = {
+	fecthing: false
+};
+
+export function facebookDataReducer(state = defaultState, action) {
 
 	switch (action.type) {
 		case FETCH: 
-            console.log('FETCH: ', action.payload);
-            return action.payload || [];
+			let finalState = Object.assign({}, state);
+			finalState.fecthing = true;
+            return finalState;
 
 		default: return state;
 
