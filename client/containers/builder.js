@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import {fecthing} from "../actions";
+import {fecthed} from "../actions";
 
 class Builder extends React.Component {
 
@@ -9,7 +9,7 @@ class Builder extends React.Component {
     }
 
     componentWillMount() {
-        this.props.fecthing();
+        this.props.fecthed();
     }
 
     render() {
@@ -27,7 +27,7 @@ let mapStateToProps = (state) => {
 };
 
 Builder = connect(mapStateToProps, {
-    fecthing
+    fecthed
 })(Builder);
 
 export default Builder;

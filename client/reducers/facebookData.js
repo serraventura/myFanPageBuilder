@@ -1,5 +1,6 @@
 import {
-    FETCH
+    FETCH,
+	FETCHED
 } from "../actions/constants";
 
 let defaultState = {
@@ -8,10 +9,18 @@ let defaultState = {
 
 export function facebookDataReducer(state = defaultState, action) {
 
+	let finalState;
+
 	switch (action.type) {
 		case FETCH: 
-			let finalState = Object.assign({}, state);
+			finalState = Object.assign({}, state);
 			finalState.fecthing = true;
+            return finalState;
+
+		case FETCHED: 
+			finalState = Object.assign({}, state);
+			finalState.fecthing = false;
+			finalState.xxx = 'xxxxx';
             return finalState;
 
 		default: return state;
