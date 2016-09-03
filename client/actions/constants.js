@@ -1,2 +1,2 @@
-export const FETCH = "FETCH";
+export const LOADING = "LOADING";
 export const FETCHED = "FETCHED";

@@ -1,25 +1,18 @@
-import {FETCH, FETCHED} from "./constants";
+import {LOADING, FETCHED} from "./constants";
 
-function fecthing() {
+function loading(isLoading) {
     return {
-        type: FETCH,
-        payload: null
-    }
-}
-
-function done() {
-    return {
-        type: FETCHED,
-        payload: null
+        type: LOADING,
+        payload: isLoading
     }
 }
 
 export function fecthed() {
     return dispatch => {
 
-        dispatch(fecthing());
+        dispatch( loading(true) );
         setTimeout(function(){
-            dispatch(done());
+            dispatch( loading(false) );
         },5000);
 
     }    

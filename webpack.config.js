@@ -7,6 +7,7 @@ var distDir = path.resolve(__dirname, "dist");
 module.exports = {
     target: "web",
     entry: ["babel-polyfill", "./client"],
+    // devtool: 'source-map',
 	output: {
 		filename: "client.js",
 		publicPath: '/dist',

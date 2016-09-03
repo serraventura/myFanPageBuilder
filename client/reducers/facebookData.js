@@ -1,10 +1,10 @@
 import {
-    FETCH,
+    LOADING,
 	FETCHED
 } from "../actions/constants";
 
 let defaultState = {
-	fecthing: false
+	isLoading: false
 };
 
 export function facebookDataReducer(state = defaultState, action) {
@@ -12,9 +12,9 @@ export function facebookDataReducer(state = defaultState, action) {
 	let finalState;
 
 	switch (action.type) {
-		case FETCH: 
+		case LOADING: 
 			finalState = Object.assign({}, state);
-			finalState.fecthing = true;
+			finalState.isLoading = action.payload;
             return finalState;
 
 		case FETCHED: 
