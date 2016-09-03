@@ -1,20 +1,36 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import {fecthed} from "../actions";
+import FacebookLogin from 'react-facebook-login';
 
 export class Builder extends React.Component {
 
     constructor(props) {
         super(props);
+        this.facebookResponse = this.facebookResponse.bind(this);
     }
 
     componentWillMount() {
         this.props.fecthed();
     }
 
+    facebookResponse(response) {
+        console.log('response: ', response);
+    }
+
     render() {
         console.log('p: ', this.props);
-        return (<div>xxxxx</div>);
+        return (
+            <div>
+                <FacebookLogin
+                    appId="1670457943200950"
+                    autoLoad={true}
+                    fields="id,name,email"
+                    scope="email,manage_pages"
+                    callback={this.facebookResponse} 
+                />
+            </div>
+        );
     }
 
     
