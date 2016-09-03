@@ -1,10 +1,26 @@
 import React from 'react';
+import TestUtils from 'react-addons-test-utils';
 import { expect } from 'chai';
-// import { shallow, mount, render } from 'enzyme';
+import configureStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
-describe('Test suite for User component', () => {
-  it('UserComponent should exist', () => {
-    let wrapper = undefined;
-    expect(wrapper).to.exist;
-  });
+import Builder from "../client/containers/builder";
+
+var component;
+
+const middlewares = [thunk]; // add your middlewares like `redux-thunk` 
+const mockStore = configureStore(middlewares);
+const initialState = {};
+const store = mockStore(initialState);
+
+describe('Testing Builder component', () => {
+
+    before(() => {
+        component = TestUtils.renderIntoDocument(<Builder store={store} />);
+    });
+
+    it('Builder component should exist', () => {
+        expect(component).to.exist;
+    });
+
 });

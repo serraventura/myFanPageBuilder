@@ -27,6 +27,7 @@ module.exports = function (config) {
     webpackServer: {
       noInfo: true
     },
-    autoWatch: true
+    autoWatch: true,
+    showStack: true
   });
 };
