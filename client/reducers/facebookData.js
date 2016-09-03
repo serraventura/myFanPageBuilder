@@ -3,11 +3,9 @@ import {
 	FETCHED
 } from "../actions/constants";
 
-let defaultState = {
-	isLoading: false
-};
+import {MODEL_STATE} from "../config";
 
-export function facebookDataReducer(state = defaultState, action) {
+export function facebookDataReducer(state = MODEL_STATE, action) {
 
 	let finalState;
 
