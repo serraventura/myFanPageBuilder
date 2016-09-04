@@ -3,7 +3,7 @@ import Builder from "../containers/builder";
 
 const App = (props) => (
     <div>
-        <h1>Hello W!</h1>
+        <h1>App</h1>
         <Builder></Builder>
     </div>
 );

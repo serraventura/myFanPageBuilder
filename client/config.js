@@ -1,5 +1,5 @@
 export const MODEL_STATE = {
-	isLoading: false,
+	isLoading: true,
 	email: null,
 	name: null,
 	facebookUserId: null,

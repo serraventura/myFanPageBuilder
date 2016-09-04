@@ -13,20 +13,22 @@ export class Builder extends React.Component {
 
     render() {
         console.log('p: ', this.props);
+
+        let facebookData = this.props.facebookData;
+
         return (
             <div>
-                <FacebookLogin
-                    appId="1670457943200950"
-                    autoLoad={true}
-                    fields="id,name,email"
-                    scope="email,manage_pages"
-                    callback={this.props.getFacebookData} 
-                />
+                {(facebookData.isLoading) ? <span>Loading...</span> : ''}
+                {
+                    (facebookData.loginStatus !== 'connected') 
+                        ? <FacebookLogin appId="1670457943200950" autoLoad={true} fields="id,name,email" scope="email,manage_pages" callback={this.props.getFacebookData} />
+                        : <span>Hello {facebookData.name} - <a href="#">logout</a></span>
+                }
+
             </div>
         );
     }
 
-    
 };
 
 let mapStateToProps = (state) => {
