@@ -1,2 +1,2 @@
 export const LOADING = "LOADING";
-export const FETCHED = "FETCHED";
+export const UPDATE_FB_DATA = "UPDATE_FB_DATA";

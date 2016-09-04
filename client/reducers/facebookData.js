@@ -1,6 +1,6 @@
 import {
     LOADING,
-	FETCHED
+	UPDATE_FB_DATA
 } from "../actions/constants";
 
 import {MODEL_STATE} from "../config";
@@ -15,10 +15,17 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 			finalState.isLoading = action.payload;
             return finalState;
 
-		case FETCHED: 
+		case UPDATE_FB_DATA: 
+
+debugger;
+
+			let facebookData = action.payload;
+
 			finalState = Object.assign({}, state);
-			finalState.fecthing = false;
-			finalState.xxx = 'xxxxx';
+			finalState.email = facebookData.email;
+			finalState.name = facebookData.name;
+			finalState.facebookUserId = facebookData.userId;
+			finalState.pages = facebookData.pages;
             return finalState;
 
 		default: return state;

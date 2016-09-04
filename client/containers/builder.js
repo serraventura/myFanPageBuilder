@@ -1,22 +1,21 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import {fecthed} from "../actions";
+import {getFacebookData} from "../actions";
 import FacebookLogin from 'react-facebook-login';
 
 export class Builder extends React.Component {
 
     constructor(props) {
         super(props);
-        this.facebookResponse = this.facebookResponse.bind(this);
+        // this.facebookResponse = this.facebookResponse.bind(this);
     }
 
     componentWillMount() {
-        this.props.fecthed();
     }
 
-    facebookResponse(response) {
-        console.log('response: ', response);
-    }
+    // facebookResponse(response) {
+    //     console.log('response: ', response);
+    // }
 
     render() {
         console.log('p: ', this.props);
@@ -27,7 +26,7 @@ export class Builder extends React.Component {
                     autoLoad={true}
                     fields="id,name,email"
                     scope="email,manage_pages"
-                    callback={this.facebookResponse} 
+                    callback={this.props.getFacebookData} 
                 />
             </div>
         );
@@ -43,7 +42,7 @@ let mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-    fecthed
+    getFacebookData
 })(Builder);
 
 // export default Builder;

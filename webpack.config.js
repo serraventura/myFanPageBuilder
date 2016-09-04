@@ -18,6 +18,11 @@ module.exports = {
 			return path.relative(distDir, info.absoluteResourcePath);
 		}
 	},
+	// plugins: [
+    //     new webpack.ProvidePlugin({
+    //         'fetch': 'imports?this=>global!exports?global.fetch!whatwg-fetch'
+    //     })
+	// ],
 	resolve: {
        extensions: ["", ".jsx", ".js", ".scss", ".json"]
 	},

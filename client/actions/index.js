@@ -1,4 +1,25 @@
-import {LOADING, FETCHED} from "./constants";
+import {LOADING, UPDATE_FB_DATA} from "./constants";
+
+export function getFacebookData(facebookData) {
+    return dispatch => {
+
+        dispatch( loading(true) );
+
+        getPageInfos().then(pageData => {
+
+            facebookData.pages = pageData.data;
+
+            dispatch( loading(false) );
+
+            return {
+                type: UPDATE_FB_DATA,
+                payload: facebookData
+            };
+
+        });
+
+    }    
+}
 
 function loading(isLoading) {
     return {
@@ -7,35 +28,16 @@ function loading(isLoading) {
     }
 }
 
-export function userData() {
-    return dispatch => {
+function getPageInfos() {
 
-        dispatch( loading(true) );
-        setTimeout(function(){
-            dispatch( loading(false) );
-        },5000);
+    let p = new Promise( (resolve, reject) => {
 
-    }    
-}
+        window.FB.api('/me/accounts?fields=link,about,name,category', function(response) {
+            resolve(response);
+        });
 
-export function getPageInfos() {
-    return dispatch => {
+    });
 
-        dispatch( loading(true) );
-        setTimeout(function(){
-            dispatch( loading(false) );
-        },5000);
+    return p;
 
-    }    
-}
-
-export function fecthed() {
-    return dispatch => {
-
-        dispatch( loading(true) );
-        setTimeout(function(){
-            dispatch( loading(false) );
-        },5000);
-
-    }    
 }
