@@ -3,6 +3,7 @@ export const MODEL_STATE = {
 	email: null,
 	name: null,
 	facebookUserId: null,
+	loginStatus: null,
 	pages: [],
 	templates: []
 };

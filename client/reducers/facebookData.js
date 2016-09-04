@@ -17,14 +17,13 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 
 		case UPDATE_FB_DATA: 
 
-debugger;
-
 			let facebookData = action.payload;
 
 			finalState = Object.assign({}, state);
 			finalState.email = facebookData.email;
 			finalState.name = facebookData.name;
-			finalState.facebookUserId = facebookData.userId;
+			finalState.facebookUserId = facebookData.userID;
+			finalState.loginStatus = facebookData.loginStatus;
 			finalState.pages = facebookData.pages;
             return finalState;
 

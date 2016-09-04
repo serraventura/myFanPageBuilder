@@ -7,15 +7,9 @@ export class Builder extends React.Component {
 
     constructor(props) {
         super(props);
-        // this.facebookResponse = this.facebookResponse.bind(this);
     }
 
-    componentWillMount() {
-    }
-
-    // facebookResponse(response) {
-    //     console.log('response: ', response);
-    // }
+    componentWillMount() {}
 
     render() {
         console.log('p: ', this.props);
