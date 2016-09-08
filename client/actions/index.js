@@ -1,4 +1,9 @@
-import {LOADING, UPDATE_FB_DATA} from "./constants";
+import {
+    LOADING, 
+    UPDATE_FB_DATA, 
+    SELECT_PAGE,
+    FANPAGE_LIST_STEP
+} from "./constants";
 
 export function getFacebookData(facebookData) {
 
@@ -24,6 +29,24 @@ export function getFacebookData(facebookData) {
         });
 
     }    
+}
+
+export function setFanPageListStep(status) {
+    return dispatch => {
+        dispatch({
+            type: FANPAGE_LIST_STEP,
+            payload: status
+        });
+    };
+}
+
+export function selectPage(page) {
+    return dispatch => {
+        dispatch({
+            type: SELECT_PAGE,
+            payload: page
+        });
+    };
 }
 
 function loading(isLoading) {

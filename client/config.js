@@ -5,5 +5,17 @@ export const MODEL_STATE = {
 	facebookUserId: null,
 	loginStatus: null,
 	pages: [],
-	templates: []
+	templates: [],
+	selectedPage: null,
+	fanPageListStepDone: false,
+	templateListStepDone: false,
+	templateConfigPanelDone: false
+};
+
+export const HIDE = {
+    visibility: "hidden"
+};
+
+export const UNHIDE = {
+    visibility: "visible"
 };
