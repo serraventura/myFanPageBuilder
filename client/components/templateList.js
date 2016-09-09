@@ -1,4 +1,5 @@
 import * as React from "react";
+import {API} from "../config";
 
 const TemplateList = (props) => (
     <ul>
@@ -7,7 +8,7 @@ const TemplateList = (props) => (
                 return (
                     <li key={idx}>
 
-                        {template.name} - <img src={"http://localhost:3319/imageTemplates/"+template.name+"/"+template.name+".jpg"} />
+                        {template.name} - <img src={ API().imageTemplates + "/" + template.name +"/" + template.name + ".jpg" } />
 
                     </li>
                 );

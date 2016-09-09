@@ -72,7 +72,9 @@ export function getListTemplates() {
                 payload: data.response
             });
 
-        });
+        }).catch(err => {
+            console.error('Action getListTemplates() Error: ', err);
+        });;
 
     };
 

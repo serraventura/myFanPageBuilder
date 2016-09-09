@@ -30,7 +30,8 @@ export function API() {
 
 	return {
 		domain: domain,
-		getListTemplates: domain + "builder/listtemplates"
+		getListTemplates: domain + "builder/listtemplates",
+		imageTemplates: domain + "imageTemplates"
 	}
 
 }
