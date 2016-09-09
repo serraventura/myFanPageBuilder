@@ -10,6 +10,7 @@ import {
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
+import TemplateList from "../components/templateList";
 import {HIDE, UNHIDE, FB_LOGIN_CONFIG} from "../config";
 
 export class Builder extends React.Component {
@@ -26,7 +27,7 @@ export class Builder extends React.Component {
         let facebookData = this.props.facebookData;
 
         return (
-            <div style={facebookData.fanPageListStepDone ? HIDE : UNHIDE}>
+            <div>
                 {(facebookData.isLoading) ? <span>Loading...</span> : ''}
                 {
                     (facebookData.loginStatus !== 'connected') 
@@ -39,7 +40,12 @@ export class Builder extends React.Component {
                             />
                         : <span>Hello {facebookData.name} - <a href="#">logout</a></span>
                 }
-                <FanPageList pages={facebookData.pages} onSelectPage={this.props.selectPage} />
+                <FanPageList 
+                    style={facebookData.fanPageListStepDone ? HIDE : UNHIDE} 
+                    pages={facebookData.pages} 
+                    onSelectPage={this.props.selectPage} 
+                />
+                <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
                 <button 
                     onClick={e => {
                         this.props.setFanPageListStep(true);
