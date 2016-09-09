@@ -1,7 +1,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import {getFacebookData, selectPage, setFanPageListStep} from "../actions";
 import FacebookLogin from 'react-facebook-login';
+
+import {
+    getFacebookData, 
+    selectPage, 
+    setFanPageListStep,
+    getListTemplates
+} from "../actions";
 
 import FanPageList from "../components/fanPageList";
 import {HIDE, UNHIDE} from "../config";
@@ -31,6 +37,7 @@ export class Builder extends React.Component {
                 <button 
                     onClick={e => {
                         this.props.setFanPageListStep(true);
+                        this.props.getListTemplates();
                     }}
                 >
                     Next
@@ -50,7 +57,8 @@ let mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getFacebookData,
     selectPage,
-    setFanPageListStep
+    setFanPageListStep,
+    getListTemplates
 })(Builder);
 
 // export default Builder;

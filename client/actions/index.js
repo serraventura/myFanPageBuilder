@@ -2,8 +2,14 @@ import {
     LOADING, 
     UPDATE_FB_DATA, 
     SELECT_PAGE,
-    FANPAGE_LIST_STEP
+    FANPAGE_LIST_STEP,
+    SET_TEMPLATE_LIST
 } from "./constants";
+
+import {
+    API,
+    DEFAULT_HTTP_PARAMS
+} from "../config";
 
 export function getFacebookData(facebookData) {
 
@@ -18,6 +24,8 @@ export function getFacebookData(facebookData) {
 
             facebookData.pages = pageData.data;
             facebookData.loginStatus = loginStatus.status;
+
+            window.sessionStorage.setItem('fb-auth-token', loginStatus.authResponse.accessToken);
 
             dispatch( loading(false) );
 
@@ -47,6 +55,27 @@ export function selectPage(page) {
             payload: page
         });
     };
+}
+
+export function getListTemplates() {
+
+    return dispatch => {
+
+        let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
+
+        defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
+
+        fetch( API().getListTemplates, defaultHttpParams ).then( res => res.json() ).then(data => {
+
+            dispatch({
+                type: SET_TEMPLATE_LIST,
+                payload: data.response
+            });
+
+        });
+
+    };
+
 }
 
 function loading(isLoading) {
