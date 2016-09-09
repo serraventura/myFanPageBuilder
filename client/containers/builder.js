@@ -10,7 +10,7 @@ import {
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
-import {HIDE, UNHIDE} from "../config";
+import {HIDE, UNHIDE, FB_LOGIN_CONFIG} from "../config";
 
 export class Builder extends React.Component {
 
@@ -30,7 +30,13 @@ export class Builder extends React.Component {
                 {(facebookData.isLoading) ? <span>Loading...</span> : ''}
                 {
                     (facebookData.loginStatus !== 'connected') 
-                        ? <FacebookLogin appId="1670457943200950" autoLoad={true} fields="id,name,email" scope="email,manage_pages" callback={this.props.getFacebookData} />
+                        ? <FacebookLogin 
+                            appId={FB_LOGIN_CONFIG.appId} 
+                            autoLoad={FB_LOGIN_CONFIG.autoLoad}
+                            fields={FB_LOGIN_CONFIG.fields}
+                            scope={FB_LOGIN_CONFIG.scope}
+                            callback={this.props.getFacebookData} 
+                            />
                         : <span>Hello {facebookData.name} - <a href="#">logout</a></span>
                 }
                 <FanPageList pages={facebookData.pages} onSelectPage={this.props.selectPage} />

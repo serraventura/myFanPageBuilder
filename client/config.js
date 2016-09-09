@@ -35,6 +35,13 @@ export function API() {
 
 }
 
+export const FB_LOGIN_CONFIG = {
+    appId: "1670457943200950",
+	autoLoad: true,
+	fields: "id,name,email",
+	scope: "email,manage_pages"
+};
+
 export const HIDE = {
     visibility: "hidden"
 };
