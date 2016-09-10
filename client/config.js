@@ -8,7 +8,7 @@ export const MODEL_STATE = {
 	loginStatus: null,
 	pages: [],
 	templates: [],
-	selectedPage: null,
+	selectedPageId: null,
 	fanPageListStepDone: false,
 	templateListStepDone: false,
 	templateConfigPanelDone: false
@@ -30,6 +30,7 @@ export function API() {
 
 	return {
 		domain: domain,
+		signup: domain + "builder/signup",
 		getListTemplates: domain + "builder/listtemplates",
 		imageTemplates: domain + "imageTemplates"
 	}

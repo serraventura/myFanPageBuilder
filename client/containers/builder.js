@@ -6,7 +6,7 @@ import {
     getFacebookData, 
     selectPage, 
     setFanPageListStep,
-    getListTemplates
+    signUp
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
@@ -26,30 +26,39 @@ export class Builder extends React.Component {
 
         let facebookData = this.props.facebookData;
 
+
+console.log(facebookData.fanPageListStepDone === true)
+
         return (
             <div>
                 {(facebookData.isLoading) ? <span>Loading...</span> : ''}
-                {
-                    (facebookData.loginStatus !== 'connected') 
-                        ? <FacebookLogin 
-                            appId={FB_LOGIN_CONFIG.appId} 
-                            autoLoad={FB_LOGIN_CONFIG.autoLoad}
-                            fields={FB_LOGIN_CONFIG.fields}
-                            scope={FB_LOGIN_CONFIG.scope}
-                            callback={this.props.getFacebookData} 
-                            />
-                        : <span>Hello {facebookData.name} - <a href="#">logout</a></span>
-                }
-                <FanPageList 
-                    style={facebookData.fanPageListStepDone ? HIDE : UNHIDE} 
-                    pages={facebookData.pages} 
-                    onSelectPage={this.props.selectPage} 
-                />
+
+                <div style={facebookData.fanPageListStepDone === true ? HIDE : UNHIDE}>
+                    {
+                        (facebookData.loginStatus !== 'connected') 
+                            ? <FacebookLogin 
+                                appId={FB_LOGIN_CONFIG.appId} 
+                                autoLoad={FB_LOGIN_CONFIG.autoLoad}
+                                fields={FB_LOGIN_CONFIG.fields}
+                                scope={FB_LOGIN_CONFIG.scope}
+                                callback={this.props.getFacebookData} 
+                                />
+                            : <span>Hello {facebookData.name} - <a href="#">logout</a></span>
+                    }
+                </div>
+
+                <div style={facebookData.fanPageListStepDone === true ? HIDE : UNHIDE}>
+                    <FanPageList 
+                        pages={facebookData.pages} 
+                        onSelectPage={this.props.selectPage} 
+                    />
+                </div>
+                
                 <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
                 <button 
                     onClick={e => {
                         this.props.setFanPageListStep(true);
-                        this.props.getListTemplates();
+                        this.props.signUp(facebookData);
                     }}
                 >
                     Next
@@ -70,7 +79,7 @@ export default connect(mapStateToProps, {
     getFacebookData,
     selectPage,
     setFanPageListStep,
-    getListTemplates
+    signUp
 })(Builder);
 
 // export default Builder;

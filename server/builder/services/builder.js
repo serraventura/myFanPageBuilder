@@ -28,12 +28,23 @@ var save = function(params, headers, cb) {
                     if(!err){
 
                         try{
-                            var pageDetails = JSON.parse(params.pageDetails);
+
+                            var page = params.pages.filter(function(item) {
+                                return item.id === params.selectedPageId
+                            });
+
+                            if (page.length > 0){
+                                //get from link the page name
+                                page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+                            } else {
+                                throw new Error('No page name found. You need the page name to create a user space.');
+                            }
+
                         }catch(err){
                             cb(err, undefined);
                         };
 
-                        User.createUserSpace(pageDetails.pageName, function(err, info) {
+                        User.createUserSpace(page, function(err, info) {
 
                             if(!err){
                                 cb(err, ret);

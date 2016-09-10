@@ -30,7 +30,7 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 
 		case SELECT_PAGE: 
 
-			finalState.selectedPage = action.payload;
+			finalState.selectedPageId = action.payload;
             return finalState;
 
 		case UPDATE_FB_DATA: 

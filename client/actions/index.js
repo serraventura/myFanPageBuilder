@@ -49,6 +49,7 @@ export function setFanPageListStep(status) {
 }
 
 export function selectPage(page) {
+
     return dispatch => {
         dispatch({
             type: SELECT_PAGE,
@@ -57,9 +58,50 @@ export function selectPage(page) {
     };
 }
 
-export function getListTemplates() {
+export function signUp(state) {
 
     return dispatch => {
+
+        let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
+
+        defaultHttpParams.method = "POST";
+        defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
+
+        try {
+            defaultHttpParams.body = JSON.stringify(state);
+
+        } catch(err) {
+            console.error('Action signUp() stringify state Error: ', err);
+        };
+
+        fetch( API().signup, defaultHttpParams ).then( res => res.json() ).then(data => {
+
+            try {
+
+                if(data.statusCode !== 200) {
+                    throw new Error(data.customMessage || data.message);
+                } else {
+
+                    getListTemplates().then(data => {
+                        dispatch(data);
+                    });
+
+                }
+
+            } catch(err) {
+                console.error('Action signUp()/getListTemplates() Error: ', err);
+            }
+
+        }).catch(err => {
+            console.error('Action signUp() Error: ', err);
+        });
+
+    };
+}
+
+export function getListTemplates() {
+
+    let p = new Promise( (resolve, reject) => {
 
         let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
 
@@ -67,16 +109,19 @@ export function getListTemplates() {
 
         fetch( API().getListTemplates, defaultHttpParams ).then( res => res.json() ).then(data => {
 
-            dispatch({
+            resolve({
                 type: SET_TEMPLATE_LIST,
                 payload: data.response
             });
 
         }).catch(err => {
             console.error('Action getListTemplates() Error: ', err);
-        });;
+            reject(err);
+        });
 
-    };
+    });
+
+    return p;
 
 }
 

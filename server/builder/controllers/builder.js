@@ -10,7 +10,7 @@ var Return = require('../../classes/Return');
 
 var signup = function(req, res) {
 
-    builderService.save(req.query, req.headers, function(err, ret){
+    builderService.save(req.body, req.headers, function(err, ret){
 
         var http;
 

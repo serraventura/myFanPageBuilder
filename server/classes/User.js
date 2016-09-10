@@ -51,7 +51,7 @@ var save = function(params, cb){
         username: params.email,
         facebookUserId: params.facebookUserId,
         pages: [{
-            pageId: params.pageId,
+            pageId: params.selectedPageId,
             template: undefined
         }]
     });
@@ -76,77 +76,13 @@ var createUserSpace = function(pageName, cb) {
     var srcBasePath = path.join(__dirname + '/../_engine/myFanPage/dist');
     var dist = path.join(__dirname + '/../live-pages/'+pageName);
 
-    var dirItems = [];
-    var scriptSource;
+    fs.copy(srcBasePath, dist, function (err) {
 
-    var symLinkMaker = function (symLinkCb) {
-
-        var symLinks = [
-            '/scripts',
-            '/styles',
-            '/404.html',
-            '/index.html',
-            '/src/core',
-            '/src/webcontent',
-            '/src'
-        ];
-
-        symLinks.push(scriptSource);
-
-        var ensureSymLinkLoop = function (i) {
-
-            if( i < symLinks.length ) {
-
-                fs.ensureSymlink( srcBasePath+symLinks[i], dist+symLinks[i], function(err){
-
-                    if(err){
-                        symLinkCb(true, err);
-                        return;
-                    }else{
-                        ensureSymLinkLoop(i+1);
-                    }
-                });
-
-            }else{
-                symLinkCb(false, 'success');
-                return;
-            }
-
-        };
-
-        ensureSymLinkLoop(0);
-
-    };
-
-    var copyConfigFile = function () {
-
-        fs.copy(srcBasePath+'/src/config', dist+'/src/config', function (err) {
-
-            if(err){
-                cb(true, err);
-            }else{
-
-                symLinkMaker(function (err, d) {
-                    cb(err, d);
-                });
-
-            }
-
-        });
-
-    }
-
-    //TODO: doing the walk just to get scripts.js. Need to find way to get the file to a symLink
-    fs.walk(srcBasePath).on('data', function (item) {
-        dirItems.push(item.path);
-    }).on('end', function () {
-
-        scriptSource = dirItems.filter(function (i) {
-            return i.search('scripts.js') != -1;
-        })[0];
-
-        scriptSource = scriptSource.replace(srcBasePath, '');
-        copyConfigFile();
+        if(err){
+            cb(true, err);
+        }else{
+            cb(err, 'success');
+        }
 
     });
 

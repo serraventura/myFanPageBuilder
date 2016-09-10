@@ -11,7 +11,7 @@ const FanPageList = (props) => (
                                 id={'page-id-' + idx}
                                 name="page"
                                 type="radio"
-                                value={page.name}
+                                value={page.id}
                                 onChange={e => {
                                     props.onSelectPage(e.target.value);
                                 }}
