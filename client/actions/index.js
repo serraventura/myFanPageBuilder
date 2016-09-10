@@ -2,7 +2,7 @@ import {
     LOADING, 
     UPDATE_FB_DATA, 
     SELECT_PAGE,
-    FANPAGE_LIST_STEP,
+    SELECT_TEMPLATE,
     SET_TEMPLATE_LIST
 } from "./constants";
 
@@ -39,18 +39,10 @@ export function getFacebookData(facebookData) {
     }    
 }
 
-export function setFanPageListStep(status) {
-    return dispatch => {
-        dispatch({
-            type: FANPAGE_LIST_STEP,
-            payload: status
-        });
-    };
-}
-
 export function selectPage(page) {
 
     return dispatch => {
+
         dispatch({
             type: SELECT_PAGE,
             payload: page
@@ -58,21 +50,45 @@ export function selectPage(page) {
     };
 }
 
-export function signUp(state) {
+export function selectTemplate(template) {
 
-    return dispatch => {
+    return (dispatch, getState) => {
+
+        const {facebookData} = getState();
+
+        let page = facebookData.pages.filter(item => item.id === facebookData.selectedPageId);
+        if(page.length>0) page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+
+        dispatch( loading(true) );
+
+        dispatch({
+            type: SELECT_TEMPLATE,
+            payload: API().templates + page
+        });
+
+        dispatch( loading(false) );
+
+    };
+}
+
+export function signUp() {
+
+    return (dispatch, getState) => {
 
         let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
+        const {facebookData} = getState();
 
         defaultHttpParams.method = "POST";
         defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
 
         try {
-            defaultHttpParams.body = JSON.stringify(state);
+            defaultHttpParams.body = JSON.stringify(facebookData);
 
         } catch(err) {
             console.error('Action signUp() stringify state Error: ', err);
         };
+
+        dispatch( loading(true) );
 
         fetch( API().signup, defaultHttpParams ).then( res => res.json() ).then(data => {
 
@@ -84,15 +100,18 @@ export function signUp(state) {
 
                     getListTemplates().then(data => {
                         dispatch(data);
+                        dispatch( loading(false) );
                     });
 
                 }
 
             } catch(err) {
+                dispatch( loading(false) );
                 console.error('Action signUp()/getListTemplates() Error: ', err);
             }
 
         }).catch(err => {
+            dispatch( loading(false) );
             console.error('Action signUp() Error: ', err);
         });
 

@@ -5,7 +5,7 @@ import FacebookLogin from 'react-facebook-login';
 import {
     getFacebookData, 
     selectPage, 
-    setFanPageListStep,
+    selectTemplate,
     signUp
 } from "../actions";
 
@@ -26,14 +26,11 @@ export class Builder extends React.Component {
 
         let facebookData = this.props.facebookData;
 
-
-console.log(facebookData.fanPageListStepDone === true)
-
         return (
             <div>
                 {(facebookData.isLoading) ? <span>Loading...</span> : ''}
 
-                <div style={facebookData.fanPageListStepDone === true ? HIDE : UNHIDE}>
+                <div>
                     {
                         (facebookData.loginStatus !== 'connected') 
                             ? <FacebookLogin 
@@ -47,7 +44,7 @@ console.log(facebookData.fanPageListStepDone === true)
                     }
                 </div>
 
-                <div style={facebookData.fanPageListStepDone === true ? HIDE : UNHIDE}>
+                <div>
                     <FanPageList 
                         pages={facebookData.pages} 
                         onSelectPage={this.props.selectPage} 
@@ -55,12 +52,14 @@ console.log(facebookData.fanPageListStepDone === true)
                 </div>
                 
                 <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
-                <button 
-                    onClick={e => {
-                        this.props.setFanPageListStep(true);
-                        this.props.signUp(facebookData);
-                    }}
-                >
+
+                <iframe 
+                    style={!facebookData.selectedTemplateUrl ? HIDE : UNHIDE} 
+                    scrolling="no" 
+                    src={facebookData.selectedTemplateUrl} 
+                />
+
+                <button onClick={ e => this.props.signUp() }>
                     Next
                 </button>
             </div>
@@ -78,7 +77,7 @@ let mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     getFacebookData,
     selectPage,
-    setFanPageListStep,
+    selectTemplate,
     signUp
 })(Builder);
 

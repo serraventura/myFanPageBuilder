@@ -2,7 +2,7 @@ import {
     LOADING,
 	UPDATE_FB_DATA,
 	SELECT_PAGE,
-	FANPAGE_LIST_STEP,
+	SELECT_TEMPLATE,
 	SET_TEMPLATE_LIST
 } from "../actions/constants";
 
@@ -18,11 +18,6 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 			finalState.isLoading = action.payload;
             return finalState;
 
-		case FANPAGE_LIST_STEP: 
-
-			finalState.fanPageListStepDone = action.payload;
-            return finalState;
-
 		case SET_TEMPLATE_LIST: 
 
 			finalState.templates = action.payload;
@@ -31,6 +26,11 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 		case SELECT_PAGE: 
 
 			finalState.selectedPageId = action.payload;
+            return finalState;
+
+		case SELECT_TEMPLATE: 
+
+			finalState.selectedTemplateUrl = action.payload;
             return finalState;
 
 		case UPDATE_FB_DATA: 

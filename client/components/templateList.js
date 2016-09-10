@@ -8,7 +8,13 @@ const TemplateList = (props) => (
                 return (
                     <li key={idx}>
 
-                        {template.name} - <img src={ API().imageTemplates + "/" + template.name +"/" + template.name + ".jpg" } />
+                        {template.name} - 
+                        <img 
+                            src={ API().imageTemplates + "/" + template.name +"/" + template.name + ".jpg" }
+                            onClick={e => {
+                                props.onSelectTemplate(template.name);
+                            }}
+                        />
 
                     </li>
                 );

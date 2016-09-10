@@ -9,9 +9,7 @@ export const MODEL_STATE = {
 	pages: [],
 	templates: [],
 	selectedPageId: null,
-	fanPageListStepDone: false,
-	templateListStepDone: false,
-	templateConfigPanelDone: false
+	selectedTemplateUrl: null
 };
 
 export const DEFAULT_HTTP_PARAMS = {
@@ -32,7 +30,8 @@ export function API() {
 		domain: domain,
 		signup: domain + "builder/signup",
 		getListTemplates: domain + "builder/listtemplates",
-		imageTemplates: domain + "imageTemplates"
+		imageTemplates: domain + "imageTemplates",
+		templates: domain + "templates/"
 	}
 
 }
