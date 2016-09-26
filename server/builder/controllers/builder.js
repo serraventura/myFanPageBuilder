@@ -125,9 +125,9 @@ var getUser = function(req, res){
 
 };
 
-var getTemplate = function(req, res){
+var setTemplate = function(req, res){
 
-    builderService.getTemplate(req.query, req.headers, function(err, template, msg){
+    builderService.setTemplate(req.body, req.headers, function(err, template, msg){
 
         var http;
 
@@ -173,7 +173,7 @@ var getTemplate = function(req, res){
 
 };
 
-exports.getTemplate = getTemplate;
+exports.setTemplate = setTemplate;
 exports.getUser = getUser;
 exports.listTemplates = listTemplates;
 exports.signup = signup;

@@ -55,18 +55,54 @@ export function selectTemplate(template) {
     return (dispatch, getState) => {
 
         const {facebookData} = getState();
+        let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
 
         let page = facebookData.pages.filter(item => item.id === facebookData.selectedPageId);
         if(page.length>0) page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
 
+        defaultHttpParams.method = "POST";
+        defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
+
+        try {
+            defaultHttpParams.body = JSON.stringify({
+                templateName: template,
+                pageName: page
+            });
+        } catch(err) {
+            console.error('Action signUp() stringify state Error: ', err);
+        };
+
         dispatch( loading(true) );
 
-        dispatch({
-            type: SELECT_TEMPLATE,
-            payload: API().templates + page
-        });
+        fetch( API().setTemplate, defaultHttpParams ).then( res => res.json() ).then(data => {
 
-        dispatch( loading(false) );
+            try {
+
+                if(data.statusCode !== 200) {
+                    throw new Error(data.customMessage || data.message);
+                } else {
+
+                    dispatch({
+                        type: SELECT_TEMPLATE,
+                        payload: {
+                            selectedPageTemplateUrl: API().templates + page,
+                            selectedTemplate: data.response.details.templateName
+                        }
+                    });
+
+                    dispatch( loading(false) );
+
+                }
+
+            } catch(err) {
+                dispatch( loading(false) );
+                console.error('Action selectTemplate()/setTemplate() Error: ', err);
+            }
+
+        }).catch(err => {
+            dispatch( loading(false) );
+            console.error('Action selectTemplate() Error: ', err);
+        });
 
     };
 }

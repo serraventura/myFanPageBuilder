@@ -29,9 +29,7 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
             return finalState;
 
 		case SELECT_TEMPLATE: 
-
-			finalState.selectedTemplateUrl = action.payload;
-            return finalState;
+            return Object.assign(finalState, action.payload);
 
 		case UPDATE_FB_DATA: 
 

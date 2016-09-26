@@ -9,9 +9,9 @@ router.post('/signup', function(req, res) {
 
 });
 
-router.get('/gettemplate', function(req, res) {
+router.post('/settemplate', function(req, res) {
 
-    builderController.getTemplate(req, res);
+    builderController.setTemplate(req, res);
 
 });
 

@@ -9,7 +9,8 @@ export const MODEL_STATE = {
 	pages: [],
 	templates: [],
 	selectedPageId: null,
-	selectedTemplateUrl: null
+	selectedPageTemplateUrl: null,
+	selectedTemplate: null
 };
 
 export const DEFAULT_HTTP_PARAMS = {
@@ -31,7 +32,8 @@ export function API() {
 		signup: domain + "builder/signup",
 		getListTemplates: domain + "builder/listtemplates",
 		imageTemplates: domain + "imageTemplates",
-		templates: domain + "templates/"
+		templates: domain + "templates/",
+		setTemplate: domain + "builder/settemplate"
 	}
 
 }

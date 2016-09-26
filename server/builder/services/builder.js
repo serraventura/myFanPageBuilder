@@ -106,7 +106,7 @@ var getUser = function(params, headers, cb){
 
 }
 
-var getTemplate = function(params, headers, cb){
+var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
@@ -132,7 +132,7 @@ var getTemplate = function(params, headers, cb){
 
 }
 
-exports.getTemplate = getTemplate;
+exports.setTemplate = setTemplate;
 exports.listTemplates = listTemplates;
 exports.getUser = getUser;
 exports.save = save;

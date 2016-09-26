@@ -54,9 +54,11 @@ export class Builder extends React.Component {
                 <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
 
                 <iframe 
-                    style={!facebookData.selectedTemplateUrl ? HIDE : UNHIDE} 
-                    scrolling="no" 
-                    src={facebookData.selectedTemplateUrl} 
+                    key={facebookData.selectedTemplate}
+                    style={facebookData.isLoading ? HIDE : UNHIDE} 
+                    scrolling="auto" 
+                    src={facebookData.selectedPageTemplateUrl}
+                    allowfullscreen 
                 />
 
                 <button onClick={ e => this.props.signUp() }>
