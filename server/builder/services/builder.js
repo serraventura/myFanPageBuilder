@@ -107,6 +107,7 @@ var getUser = function(params, headers, cb){
 
 }
 
+//TODO: refactoring to remove deep inner functions
 var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
@@ -114,12 +115,14 @@ var setTemplate = function(params, headers, cb){
         var srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
+        // first of all copy the template version of the config file to the live template
         fs.copy(srcBasePath, dist + 'config.js', function (err) {
 
             if(err){
                 cb(true, err);
             }else{
 
+                // if everything is ok get content of the config file
                 var file = '';
                 var rd = readline.createInterface({
                     input: fs.createReadStream(srcBasePath),
@@ -133,6 +136,8 @@ var setTemplate = function(params, headers, cb){
                     var beginFile = line.indexOf('use strict') !== -1;
                     var angularBeginFile = line.indexOf('constant') !== -1;
 
+                    // getting only the content needed to manipulate a JSON.
+                    // the javascript part is ignored 
                     if ( !beginFile && !angularBeginFile && !endFile ) {
                         file += line.trim();
                     }
@@ -141,17 +146,35 @@ var setTemplate = function(params, headers, cb){
 
                 rd.on('close', function(line) {
 
-                    var json = JSON.stringify('{'+file+'}', null, 2);
+                    // transform the file content to a JSON.
+                    var jsonObj = JSON.parse('{'+file+'}');
 
-                    fs.writeFile(dist + 'config.json', json, 'utf8', function(err) {
+                    jsonObj.fanPageId = params.pageName;
+                    jsonObj.template = params.templateName;
+
+                    var json = JSON.stringify(jsonObj, null, 2);
+                    var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+json+');';
+
+                    // save the JSON file representation of the config file 
+                    // to manipulate later dynamically.
+                    fs.writeFile(dist + 'config.json', json, 'utf8', function(err, data) {
 
                         if(err) {
                             cb(true, err);
                         } else {
 
-                            cb(err, {
-                                path: 'templates/'+params.pageName,
-                                details: params
+                            // replace config file with latest changes
+                            fs.writeFile(dist + 'config.js', jsConfig, 'utf8', function(err, data) {
+
+                                if(err) {
+                                    cb(true, err);
+                                } else {
+                                    cb(err, {
+                                        path: 'templates/'+params.pageName,
+                                        details: params
+                                    });
+                                }
+
                             });
 
                         }
