@@ -3,6 +3,7 @@ var request = require('request');
 var Q = require('q');
 var _ = require('lodash');
 var fs = require('fs-extra');
+var readline = require('readline');
 var path = require('path');
 
 var settings = require('../../includes/settings');
@@ -111,17 +112,55 @@ var setTemplate = function(params, headers, cb){
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
         var srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
-        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.js');
+        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
-        fs.copy(srcBasePath, dist, function (err) {
+        fs.copy(srcBasePath, dist + 'config.js', function (err) {
 
             if(err){
                 cb(true, err);
             }else{
-                cb(err, {
-                    path: 'templates/'+params.pageName,
-                    details: params
+
+                var file = '';
+                var rd = readline.createInterface({
+                    input: fs.createReadStream(srcBasePath),
+                    output: process.stdout,
+                    terminal: false
                 });
+
+                rd.on('line', function(line) {
+
+                    var endFile = line.indexOf(');') !== -1;
+                    var beginFile = line.indexOf('use strict') !== -1;
+                    var angularBeginFile = line.indexOf('constant') !== -1;
+
+                    if ( !beginFile && !angularBeginFile && !endFile ) {
+                        file += line.trim();
+                    }
+
+                });
+
+                rd.on('close', function(line) {
+
+                    var json = JSON.stringify('{'+file+'}', null, 2);
+
+                    fs.writeFile(dist + 'config.json', json, 'utf8', function(err) {
+
+                        if(err) {
+                            cb(true, err);
+                        } else {
+
+                            cb(err, {
+                                path: 'templates/'+params.pageName,
+                                details: params
+                            });
+
+                        }
+
+                    });
+
+                });
+
+
             };
 
         });

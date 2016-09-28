@@ -58,7 +58,7 @@ export class Builder extends React.Component {
                     style={facebookData.isLoading ? HIDE : UNHIDE} 
                     scrolling="auto" 
                     src={facebookData.selectedPageTemplateUrl}
-                    allowfullscreen 
+                    allowFullScreen 
                 />
 
                 <button onClick={ e => this.props.signUp() }>
