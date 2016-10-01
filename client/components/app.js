@@ -4,7 +4,7 @@ import Builder from "../containers/builder";
 const App = (props) => (
     <div>
         <h1>App</h1>
-        <Builder></Builder>
+        <Builder className="builder-component"></Builder>
     </div>
 );
 

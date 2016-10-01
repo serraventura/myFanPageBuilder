@@ -4,6 +4,8 @@ import {render} from "react-dom";
 import {Router, Route, hashHistory} from "react-router";
 import {Provider} from "react-redux";
 
+import './styles/style.less';
+
 import App from "./components/app";
 import configureStore from "./store/configureStore";
 

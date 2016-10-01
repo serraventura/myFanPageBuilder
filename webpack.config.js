@@ -27,15 +27,32 @@ module.exports = {
        extensions: ["", ".jsx", ".js", ".scss", ".json"]
 	},
     module: {
-        loaders: [{
-            test: /.jsx?$/,
-            loader: 'babel-loader',
-            includes: [clientDir],
-            exclude: /node_modules/,
-            query: {
-                presets: ['es2015', 'react']
+        loaders: [
+            {
+                test: /.jsx?$/,
+                loader: 'babel-loader',
+                includes: [clientDir],
+                exclude: /node_modules/,
+                query: {
+                    presets: ['es2015', 'react']
+                }
+            },
+            {
+                test: /\.less$/,
+                exclude: /node_modules/,
+                loaders: ['style', 'css', 'autoprefixer', 'less']
+            },
+            { 
+                test: /\.(woff|woff2|eot|ttf|otf)$/, 
+                loader: 'file-loader?limit=100000', 
+                exclude: /node_modules/ 
+            },
+            {
+                test: /\.(png|jpg|svg)$/,
+                exclude: /node_modules/,
+                loader: 'url-loader'
             }
-        }]
+        ]
     }
 
 };

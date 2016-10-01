@@ -13,6 +13,18 @@ import FanPageList from "../components/fanPageList";
 import TemplateList from "../components/templateList";
 import {HIDE, UNHIDE, FB_LOGIN_CONFIG} from "../config";
 
+// const iframeFull = {
+//     "position": "absolute",
+//     "top": "0",
+//     "left": "0",
+//     "width": "100%",
+//     "height": "100%",
+//     "color":"black",
+//     "zIndex": "200"
+// };
+
+const iframeFull = {};
+
 export class Builder extends React.Component {
 
     constructor(props) {
@@ -34,6 +46,7 @@ export class Builder extends React.Component {
                     {
                         (facebookData.loginStatus !== 'connected') 
                             ? <FacebookLogin 
+                                className="facebook-login-component"
                                 appId={FB_LOGIN_CONFIG.appId} 
                                 autoLoad={FB_LOGIN_CONFIG.autoLoad}
                                 fields={FB_LOGIN_CONFIG.fields}
@@ -46,17 +59,19 @@ export class Builder extends React.Component {
 
                 <div>
                     <FanPageList 
+                        className="fanpage-list-component"
                         pages={facebookData.pages} 
                         onSelectPage={this.props.selectPage} 
                     />
                 </div>
                 
-                <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
+                <TemplateList className="template-list-component" templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
 
                 <iframe 
+                    className="live-template-component"
                     key={facebookData.selectedTemplate}
-                    style={facebookData.isLoading ? HIDE : UNHIDE} 
                     scrolling="auto" 
+                    style={iframeFull}
                     src={facebookData.selectedPageTemplateUrl}
                     allowFullScreen 
                 />
