@@ -3,7 +3,8 @@ import {
 	UPDATE_FB_DATA,
 	SELECT_PAGE,
 	SELECT_TEMPLATE,
-	SET_TEMPLATE_LIST
+	SET_TEMPLATE_LIST,
+	OPEN_LIVE_TEMPLATE
 } from "../actions/constants";
 
 import {MODEL_STATE} from "../config";
@@ -26,6 +27,11 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 		case SELECT_PAGE: 
 
 			finalState.selectedPageId = action.payload;
+            return finalState;
+
+		case OPEN_LIVE_TEMPLATE: 
+
+			finalState.isLiveTemplateOpen = action.payload;
             return finalState;
 
 		case SELECT_TEMPLATE: 

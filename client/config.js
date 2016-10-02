@@ -9,8 +9,9 @@ export const MODEL_STATE = {
 	pages: [],
 	templates: [],
 	selectedPageId: null,
-	selectedPageTemplateUrl: 'http://localhost:3319/templates/myfanpageapp/',
-	selectedTemplate: null
+	selectedPageTemplateUrl: 'http://localhost:3319/templates/myfanpageapp',
+	selectedTemplate: null,
+	isLiveTemplateOpen: true
 };
 
 export const DEFAULT_HTTP_PARAMS = {

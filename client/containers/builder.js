@@ -54,7 +54,8 @@ export class Builder extends React.Component {
 
                 <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
 
-                <LiveTemplate 
+                <LiveTemplate
+                    open={facebookData.isLiveTemplateOpen} 
                     srcTemplate={facebookData.selectedPageTemplateUrl}
                     selectedTemplate={facebookData.selectedTemplate}
                 />

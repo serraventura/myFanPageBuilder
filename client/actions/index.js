@@ -3,7 +3,8 @@ import {
     UPDATE_FB_DATA, 
     SELECT_PAGE,
     SELECT_TEMPLATE,
-    SET_TEMPLATE_LIST
+    SET_TEMPLATE_LIST,
+    OPEN_LIVE_TEMPLATE
 } from "./constants";
 
 import {
@@ -89,6 +90,8 @@ export function selectTemplate(template) {
                             selectedTemplate: data.response.details.templateName
                         }
                     });
+
+                    dispatch( openLiveTemplate(true) );
 
                     dispatch( loading(false) );
 
@@ -178,6 +181,13 @@ export function getListTemplates() {
 
     return p;
 
+}
+
+export function openLiveTemplate(open) {
+    return {
+        type: OPEN_LIVE_TEMPLATE,
+        payload: open
+    }
 }
 
 function loading(isLoading) {
