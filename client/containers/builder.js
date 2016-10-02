@@ -11,19 +11,9 @@ import {
 
 import FanPageList from "../components/fanPageList";
 import TemplateList from "../components/templateList";
+import LiveTemplate from "../components/liveTemplate";
+
 import {HIDE, UNHIDE, FB_LOGIN_CONFIG} from "../config";
-
-// const iframeFull = {
-//     "position": "absolute",
-//     "top": "0",
-//     "left": "0",
-//     "width": "100%",
-//     "height": "100%",
-//     "color":"black",
-//     "zIndex": "200"
-// };
-
-const iframeFull = {};
 
 export class Builder extends React.Component {
 
@@ -57,23 +47,16 @@ export class Builder extends React.Component {
                     }
                 </div>
 
-                <div>
-                    <FanPageList 
-                        className="fanpage-list-component"
-                        pages={facebookData.pages} 
-                        onSelectPage={this.props.selectPage} 
-                    />
-                </div>
-                
-                <TemplateList className="template-list-component" templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
+                <FanPageList 
+                    pages={facebookData.pages} 
+                    onSelectPage={this.props.selectPage} 
+                />
 
-                <iframe 
-                    className="live-template-component"
-                    key={facebookData.selectedTemplate}
-                    scrolling="auto" 
-                    style={iframeFull}
-                    src={facebookData.selectedPageTemplateUrl}
-                    allowFullScreen 
+                <TemplateList templates={facebookData.templates} onSelectTemplate={this.props.selectTemplate} />
+
+                <LiveTemplate 
+                    srcTemplate={facebookData.selectedPageTemplateUrl}
+                    selectedTemplate={facebookData.selectedTemplate}
                 />
 
                 <button onClick={ e => this.props.signUp() }>
