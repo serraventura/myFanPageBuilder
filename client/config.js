@@ -11,7 +11,8 @@ export const MODEL_STATE = {
 	selectedPageId: null,
 	selectedPageTemplateUrl: 'http://localhost:3319/templates/myfanpageapp',
 	selectedTemplate: null,
-	isLiveTemplateOpen: true
+	templateConfig: null,
+	isLiveTemplateOpen: false
 };
 
 export const DEFAULT_HTTP_PARAMS = {

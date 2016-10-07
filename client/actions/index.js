@@ -4,7 +4,8 @@ import {
     SELECT_PAGE,
     SELECT_TEMPLATE,
     SET_TEMPLATE_LIST,
-    OPEN_LIVE_TEMPLATE
+    OPEN_LIVE_TEMPLATE,
+    SET_TEMPLATE_CONFIG_MENU_ITEM
 } from "./constants";
 
 import {
@@ -51,6 +52,17 @@ export function selectPage(page) {
     };
 }
 
+export function setTemplateConfigMenuItem(item) {
+
+    return dispatch => {
+
+        dispatch({
+            type: SET_TEMPLATE_CONFIG_MENU_ITEM,
+            payload: item
+        });
+    };
+}
+
 export function selectTemplate(template) {
 
     return (dispatch, getState) => {
@@ -87,7 +99,8 @@ export function selectTemplate(template) {
                         type: SELECT_TEMPLATE,
                         payload: {
                             selectedPageTemplateUrl: API().templates + page,
-                            selectedTemplate: data.response.details.templateName
+                            selectedTemplate: data.response.details.templateName,
+                            templateConfig: JSON.parse(data.response.templateConfig)
                         }
                     });
 

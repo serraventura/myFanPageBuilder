@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { facebookDataReducer } from './facebookData';
 
 const rootReducer = combineReducers({
-	facebookData: facebookDataReducer
+	facebookData: facebookDataReducer,
 });
 
 export default rootReducer;

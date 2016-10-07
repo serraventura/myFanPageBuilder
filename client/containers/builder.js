@@ -6,7 +6,8 @@ import {
     getFacebookData, 
     selectPage, 
     selectTemplate,
-    signUp
+    signUp,
+    setTemplateConfigMenuItem
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
@@ -58,6 +59,8 @@ export class Builder extends React.Component {
                     open={facebookData.isLiveTemplateOpen} 
                     srcTemplate={facebookData.selectedPageTemplateUrl}
                     selectedTemplate={facebookData.selectedTemplate}
+                    templateConfig={facebookData.templateConfig}
+                    onSetupMenuItem={this.props.setTemplateConfigMenuItem}
                 />
 
                 <button onClick={ e => this.props.signUp() }>
@@ -79,7 +82,8 @@ export default connect(mapStateToProps, {
     getFacebookData,
     selectPage,
     selectTemplate,
-    signUp
+    signUp,
+    setTemplateConfigMenuItem
 })(Builder);
 
 // export default Builder;

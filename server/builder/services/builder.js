@@ -152,12 +152,13 @@ var setTemplate = function(params, headers, cb){
                     jsonObj.fanPageId = params.pageName;
                     jsonObj.template = params.templateName;
 
-                    var json = JSON.stringify(jsonObj, null, 2);
-                    var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+json+');';
+                    var json = JSON.stringify(jsonObj);
+                    var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+                    var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+jsonFormatted+');';
 
                     // save the JSON file representation of the config file 
                     // to manipulate later dynamically.
-                    fs.writeFile(dist + 'config.json', json, 'utf8', function(err, data) {
+                    fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
 
                         if(err) {
                             cb(true, err);
@@ -171,7 +172,8 @@ var setTemplate = function(params, headers, cb){
                                 } else {
                                     cb(err, {
                                         path: 'templates/'+params.pageName,
-                                        details: params
+                                        details: params,
+                                        templateConfig: json
                                     });
                                 }
 

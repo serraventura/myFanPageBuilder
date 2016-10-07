@@ -4,7 +4,8 @@ import {
 	SELECT_PAGE,
 	SELECT_TEMPLATE,
 	SET_TEMPLATE_LIST,
-	OPEN_LIVE_TEMPLATE
+	OPEN_LIVE_TEMPLATE,
+	SET_TEMPLATE_CONFIG_MENU_ITEM
 } from "../actions/constants";
 
 import {MODEL_STATE} from "../config";
@@ -27,6 +28,11 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
 		case SELECT_PAGE: 
 
 			finalState.selectedPageId = action.payload;
+            return finalState;
+
+		case SET_TEMPLATE_CONFIG_MENU_ITEM: 
+
+			finalState.templateConfig.menuItemSelected = action.payload;
             return finalState;
 
 		case OPEN_LIVE_TEMPLATE: 
