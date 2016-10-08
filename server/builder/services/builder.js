@@ -149,7 +149,8 @@ var setTemplate = function(params, headers, cb){
                     // transform the file content to a JSON.
                     var jsonObj = JSON.parse('{'+file+'}');
 
-                    jsonObj.fanPageId = params.pageName;
+                    //keep myfanpageapp hardcoded for fake data
+                    jsonObj.fanPageId = 'myfanpageapp';//params.pageName;
                     jsonObj.template = params.templateName;
 
                     var json = JSON.stringify(jsonObj);

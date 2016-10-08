@@ -2,16 +2,6 @@ import * as React from "react";
 import {HIDE, UNHIDE} from "../config";
 import InputElement from "./inputElement";
 
-const renderInput = (value) => {
-
-    if (typeof(value) === 'boolean') {
-        return (<input type="checkbox" defaultChecked={value} />);
-    } else if (typeof(value) === 'string') {
-        return (<input type="text" value={value} onChange={ e => inputChange(value) } />);
-    }
-
-};
-
 const LiveTemplate = (props) => {
 
     let menuItems = !props.templateConfig ? [] : Object.keys(props.templateConfig.menu||{});
@@ -68,7 +58,7 @@ const LiveTemplate = (props) => {
 
                 </div>
 
-                <button>Close</button>
+                <button>Close</button><button>Publish</button><button>Preview with my Fanpage</button>
 
             </div>
             <div className="live-template-footer"></div>
