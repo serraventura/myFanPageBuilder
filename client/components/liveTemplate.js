@@ -1,12 +1,13 @@
 import * as React from "react";
 import {HIDE, UNHIDE} from "../config";
+import InputElement from "./inputElement";
 
 const renderInput = (value) => {
 
     if (typeof(value) === 'boolean') {
         return (<input type="checkbox" defaultChecked={value} />);
     } else if (typeof(value) === 'string') {
-        return (<input type="text" defaultValue={value} />);
+        return (<input type="text" value={value} onChange={ e => inputChange(value) } />);
     }
 
 };
@@ -52,7 +53,12 @@ const LiveTemplate = (props) => {
                             menuItemOptions.map(item => {
                                 return (
                                     <li key={item}>
-                                        {item} - {renderInput( props.templateConfig.menu[menuItemSelected][item] )}
+                                        <InputElement 
+                                            templateConfig={props.templateConfig} 
+                                            menuItem={menuItemSelected}
+                                            subMenuItem={item}
+                                            onChangeMenuItem={props.onChangeMenuItem}>
+                                        </InputElement>
                                     </li>
                                 );
                             })

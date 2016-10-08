@@ -5,7 +5,8 @@ import {
     SELECT_TEMPLATE,
     SET_TEMPLATE_LIST,
     OPEN_LIVE_TEMPLATE,
-    SET_TEMPLATE_CONFIG_MENU_ITEM
+    SET_TEMPLATE_CONFIG_MENU_ITEM,
+    CHANGE_TEMPLATE_CONFIG_MENU_ITEM
 } from "./constants";
 
 import {
@@ -59,6 +60,21 @@ export function setTemplateConfigMenuItem(item) {
         dispatch({
             type: SET_TEMPLATE_CONFIG_MENU_ITEM,
             payload: item
+        });
+    };
+}
+
+export function changeTemplateConfigMenuItem(item, subItem, newValue) {
+
+    return (dispatch, getState) => {
+
+        const {facebookData} = getState();
+
+        facebookData.templateConfig.menu[item][subItem] = newValue;
+
+        dispatch({
+            type: CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
+            payload: facebookData.templateConfig.menu
         });
     };
 }
