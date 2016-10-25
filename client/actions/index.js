@@ -6,7 +6,8 @@ import {
     SET_TEMPLATE_LIST,
     OPEN_LIVE_TEMPLATE,
     SET_TEMPLATE_CONFIG_MENU_ITEM,
-    CHANGE_TEMPLATE_CONFIG_MENU_ITEM
+    CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
+    PREVIEW_PAGE
 } from "./constants";
 
 import {
@@ -76,6 +77,58 @@ export function changeTemplateConfigMenuItem(item, subItem, newValue) {
             type: CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
             payload: facebookData.templateConfig.menu
         });
+    };
+}
+
+export function previewPage() {
+
+    return (dispatch, getState) => {
+
+        const {facebookData} = getState();
+        let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
+
+        defaultHttpParams.method = "POST";
+        defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
+
+        try {
+            defaultHttpParams.body = JSON.stringify({
+                templateConfig: facebookData.templateConfig
+            });
+        } catch(err) {
+            console.error('Action previewPage() stringify Error: ', err);
+        };
+
+        dispatch( loading(true) );
+
+        fetch( API().previewPage, defaultHttpParams ).then( res => res.json() ).then(data => {
+
+            try {
+
+                if(data.statusCode !== 200) {
+                    throw new Error(data.customMessage || data.message);
+                } else {
+
+                    dispatch({
+                        type: PREVIEW_PAGE,
+                        payload: {
+                            templateConfig: JSON.parse(data.response.templateConfig)
+                        }
+                    });
+
+                    dispatch( loading(false) );
+
+                }
+
+            } catch(err) {
+                dispatch( loading(false) );
+                console.error('Action previewPage() status code Error: ', err);
+            }
+
+        }).catch(err => {
+            dispatch( loading(false) );
+            console.error('Action previewPage() Error: ', err);
+        });
+
     };
 }
 

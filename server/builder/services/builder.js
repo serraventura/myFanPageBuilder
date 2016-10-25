@@ -197,7 +197,21 @@ var setTemplate = function(params, headers, cb){
 
 }
 
+var previewPage = function(params, headers, cb) {
+
+    FB.tokenValidation(headers['auth-token']).then(function (data) {
+
+        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.json');
+        //read file config get content
+        //update with new menu options
+        //return new config file
+
+    });
+
+}
+
 exports.setTemplate = setTemplate;
 exports.listTemplates = listTemplates;
 exports.getUser = getUser;
 exports.save = save;
+exports.previewPage = previewPage;

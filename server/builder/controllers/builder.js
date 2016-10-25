@@ -8,6 +8,36 @@ var Return = require('../../classes/Return');
 //var settings = require('../../includes/settings');
 //var utils = require('../../includes/utils');
 
+var previewPage = function(req, res) {
+
+    builderService.previewPage(req.body, req.headers, function(err, ret){
+
+        var http;
+
+        if(!err && ret){
+
+            http = Return.http.ok;
+            http.customMessage = 'Page config generated successfully.';
+            http.response = ret;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else{
+
+            http = Return.http.badRequest;
+            http.customMessage = 'Not possible to preview the changes to the page.';
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }
+
+    });
+
+};
+
 var signup = function(req, res) {
 
     builderService.save(req.body, req.headers, function(err, ret){
@@ -177,4 +207,4 @@ exports.setTemplate = setTemplate;
 exports.getUser = getUser;
 exports.listTemplates = listTemplates;
 exports.signup = signup;
-
+exports.previewPage = previewPage;

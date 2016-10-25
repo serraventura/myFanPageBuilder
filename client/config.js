@@ -35,7 +35,8 @@ export function API() {
 		getListTemplates: domain + "builder/listtemplates",
 		imageTemplates: domain + "imageTemplates",
 		templates: domain + "templates/",
-		setTemplate: domain + "builder/settemplate"
+		setTemplate: domain + "builder/settemplate",
+		previewPage: domain + "builder/previewpage"
 	}
 
 }

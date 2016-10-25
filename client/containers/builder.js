@@ -8,7 +8,8 @@ import {
     selectTemplate,
     signUp,
     setTemplateConfigMenuItem,
-    changeTemplateConfigMenuItem
+    changeTemplateConfigMenuItem,
+    previewPage
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
@@ -63,6 +64,7 @@ export class Builder extends React.Component {
                     templateConfig={facebookData.templateConfig}
                     onSetupMenuItem={this.props.setTemplateConfigMenuItem}
                     onChangeMenuItem={this.props.changeTemplateConfigMenuItem}
+                    onPreview={this.props.previewPage}
                 />
 
                 <button onClick={ e => this.props.signUp() }>
@@ -86,7 +88,8 @@ export default connect(mapStateToProps, {
     selectTemplate,
     signUp,
     setTemplateConfigMenuItem,
-    changeTemplateConfigMenuItem
+    changeTemplateConfigMenuItem,
+    previewPage
 })(Builder);
 
 // export default Builder;

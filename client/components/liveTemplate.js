@@ -23,7 +23,7 @@ const LiveTemplate = (props) => {
                             menuItems.map(item => {
                                 return (
                                     <li 
-                                        onClick={ e => {props.onSetupMenuItem(item)}} 
+                                        onClick={ e => props.onSetupMenuItem(item) } 
                                         key={item} 
                                         className={item === menuItemSelected ? 'active' : ''}
                                     >
@@ -58,7 +58,7 @@ const LiveTemplate = (props) => {
 
                 </div>
 
-                <button>Close</button><button>Publish</button><button>Preview with my Fanpage</button>
+                <button>Close</button><button>Publish</button><button onClick={ e => props.onPreview() }>Preview with my Fanpage</button>
 
             </div>
             <div className="live-template-footer"></div>
