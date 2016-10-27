@@ -148,14 +148,8 @@ var setTemplate = function(params, headers, cb){
 
                     // transform the file content to a JSON.
                     var jsonObj = JSON.parse('{'+file+'}');
-
-                    //keep myfanpageapp hardcoded for fake data
-                    jsonObj.fanPageId = 'myfanpageapp';//params.pageName;
-                    jsonObj.template = params.templateName;
-
                     var json = JSON.stringify(jsonObj);
                     var jsonFormatted = JSON.stringify(jsonObj, null, 2);
-                    var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+jsonFormatted+');';
 
                     // save the JSON file representation of the config file 
                     // to manipulate later dynamically.
@@ -165,8 +159,9 @@ var setTemplate = function(params, headers, cb){
                             cb(true, err);
                         } else {
 
+                            //TODO: refactoring to one single function
                             // replace config file with latest changes
-                            fs.writeFile(dist + 'config.js', jsConfig, 'utf8', function(err, data) {
+                            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
 
                                 if(err) {
                                     cb(true, err);
@@ -201,12 +196,53 @@ var previewPage = function(params, headers, cb) {
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.json');
-        //read file config get content
-        //update with new menu options
-        //return new config file
+        var src = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.json');
+        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.js');
+
+        fs.readFile(src, 'utf8', function (err, data) {
+            
+            if(err){
+                cb(true, err);
+            }else{
+
+                var jsonObj = JSON.parse(data);
+                var json = JSON.stringify(jsonObj);
+                jsonObj.menu = params.templateConfig.menu;
+
+                //TODO: refactoring to one single function
+                // replace config file with latest changes
+                fs.writeFile(dist, genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
+
+                    if(err) {
+                        cb(true, err);
+                    } else {
+                        cb(err, {
+                            path: 'templates/'+params.pageName,
+                            details: params,
+                            templateConfig: json
+                        });
+                    }
+
+                });
+
+            }
+
+        });
 
     });
+
+}
+
+var genenerateConfigFileJS = function (jsonConfig, templateName) {
+
+    //keep myfanpageapp hardcoded for fake data
+    jsonConfig.fanPageId = 'myfanpageapp';//params.pageName;
+    if (templateName) jsonConfig.template = templateName;
+
+    var jsonFormatted = JSON.stringify(jsonConfig, null, 2);
+    var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+jsonFormatted+');';
+
+    return jsConfig;
 
 }
 
