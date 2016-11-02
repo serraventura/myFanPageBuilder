@@ -200,13 +200,15 @@ var previewPage = function(params, headers, cb) {
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.js');
 
         fs.readFile(src, 'utf8', function (err, data) {
-            
+
             if(err){
                 cb(true, err);
             }else{
 
                 var jsonObj = JSON.parse(data);
                 var json = JSON.stringify(jsonObj);
+                //TODO: check if config.json file should be updated too
+                // for now only config.js is being updated with new menu
                 jsonObj.menu = params.templateConfig.menu;
 
                 //TODO: refactoring to one single function
@@ -217,9 +219,9 @@ var previewPage = function(params, headers, cb) {
                         cb(true, err);
                     } else {
                         cb(err, {
-                            path: 'templates/'+params.pageName,
-                            details: params,
-                            templateConfig: json
+                            path: 'templates/'+params.pageName//,
+                            // details: params,
+                            // templateConfig: json
                         });
                     }
 

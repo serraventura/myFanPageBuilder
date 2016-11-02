@@ -6,7 +6,8 @@ import {
 	SET_TEMPLATE_LIST,
 	OPEN_LIVE_TEMPLATE,
 	SET_TEMPLATE_CONFIG_MENU_ITEM,
-	CHANGE_TEMPLATE_CONFIG_MENU_ITEM
+	CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
+	TEMPLATE_MODIFIED
 } from "../actions/constants";
 
 import {MODEL_STATE} from "../config";
@@ -47,6 +48,9 @@ export function facebookDataReducer(state = MODEL_STATE, action) {
             return finalState;
 
 		case SELECT_TEMPLATE: 
+            return Object.assign(finalState, action.payload);
+
+		case TEMPLATE_MODIFIED: 
             return Object.assign(finalState, action.payload);
 
 		case UPDATE_FB_DATA: 

@@ -7,13 +7,16 @@ import {
     OPEN_LIVE_TEMPLATE,
     SET_TEMPLATE_CONFIG_MENU_ITEM,
     CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
-    PREVIEW_PAGE
+    PREVIEW_PAGE,
+    TEMPLATE_MODIFIED
 } from "./constants";
 
 import {
     API,
     DEFAULT_HTTP_PARAMS
 } from "../config";
+
+import {getPageName} from "../util";
 
 export function getFacebookData(facebookData) {
 
@@ -90,9 +93,12 @@ export function previewPage() {
         defaultHttpParams.method = "POST";
         defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
 
+        let page = getPageName(facebookData.pages, facebookData.selectedPageId);
+
         try {
             defaultHttpParams.body = JSON.stringify({
-                templateConfig: facebookData.templateConfig
+                templateConfig: facebookData.templateConfig,
+                pageName: page
             });
         } catch(err) {
             console.error('Action previewPage() stringify Error: ', err);
@@ -115,6 +121,14 @@ export function previewPage() {
                         }
                     });
 
+                    dispatch({
+                        type: TEMPLATE_MODIFIED,
+                        payload: {
+                            selectedPageTemplateUrl: API().templates + page,
+                            templateModified: new Date()
+                        }
+                    });
+                    
                     dispatch( loading(false) );
 
                 }
@@ -139,8 +153,10 @@ export function selectTemplate(template) {
         const {facebookData} = getState();
         let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
 
-        let page = facebookData.pages.filter(item => item.id === facebookData.selectedPageId);
-        if(page.length>0) page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+        // let page = facebookData.pages.filter(item => item.id === facebookData.selectedPageId);
+        // if(page.length>0) page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+
+        let page = getPageName(facebookData.pages, facebookData.selectedPageId);
 
         defaultHttpParams.method = "POST";
         defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
