@@ -112,77 +112,90 @@ var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        var srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
+        var srcLiveConfig = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
-        // first of all copy the template version of the config file to the live template
-        fs.copy(srcBasePath, dist + 'config.js', function (err) {
+        //if config file backup exist setTemplate should load config file from live template folder
+        fs.stat(srcLiveConfig+'config-bkp.js', function(err, data) {
 
-            if(err){
-                cb(true, err);
-            }else{
+            var srcBasePath;
 
-                // if everything is ok get content of the config file
-                var file = '';
-                var rd = readline.createInterface({
-                    input: fs.createReadStream(srcBasePath),
-                    output: process.stdout,
-                    terminal: false
-                });
+            if (!err) {
+                srcBasePath = srcLiveConfig + 'config.js';
+            } else {
+                // copy the template version of the config file to the live template
+                srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
+            }
 
-                rd.on('line', function(line) {
+            fs.copy(srcBasePath, dist + 'config.js', function (err) {
 
-                    var endFile = line.indexOf(');') !== -1;
-                    var beginFile = line.indexOf('use strict') !== -1;
-                    var angularBeginFile = line.indexOf('constant') !== -1;
+                if(err){
+                    cb(true, err);
+                }else{
 
-                    // getting only the content needed to manipulate a JSON.
-                    // the javascript part is ignored 
-                    if ( !beginFile && !angularBeginFile && !endFile ) {
-                        file += line.trim();
-                    }
+                    // if everything is ok get content of the config file
+                    var file = '';
+                    var rd = readline.createInterface({
+                        input: fs.createReadStream(srcBasePath),
+                        output: process.stdout,
+                        terminal: false
+                    });
 
-                });
+                    rd.on('line', function(line) {
 
-                rd.on('close', function(line) {
+                        var endFile = line.indexOf(');') !== -1;
+                        var beginFile = line.indexOf('use strict') !== -1;
+                        var angularBeginFile = line.indexOf('constant') !== -1;
 
-                    // transform the file content to a JSON.
-                    var jsonObj = JSON.parse('{'+file+'}');
-                    var json = JSON.stringify(jsonObj);
-                    var jsonFormatted = JSON.stringify(jsonObj, null, 2);
-
-                    // save the JSON file representation of the config file 
-                    // to manipulate later dynamically.
-                    fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
-
-                        if(err) {
-                            cb(true, err);
-                        } else {
-
-                            //TODO: refactoring to one single function
-                            // replace config file with latest changes
-                            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
-
-                                if(err) {
-                                    cb(true, err);
-                                } else {
-                                    cb(err, {
-                                        path: 'templates/'+params.pageName,
-                                        details: params,
-                                        templateConfig: json
-                                    });
-                                }
-
-                            });
-
+                        // getting only the content needed to manipulate a JSON.
+                        // the javascript part is ignored 
+                        if ( !beginFile && !angularBeginFile && !endFile ) {
+                            file += line.trim();
                         }
 
                     });
 
-                });
+                    rd.on('close', function(line) {
+
+                        // transform the file content to a JSON.
+                        var jsonObj = JSON.parse('{'+file+'}');
+                        var json = JSON.stringify(jsonObj);
+                        var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+
+                        // save the JSON file representation of the config file 
+                        // to manipulate later dynamically.
+                        fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
+
+                            if(err) {
+                                cb(true, err);
+                            } else {
+
+                                //TODO: refactoring to one single function
+                                // replace config file with latest changes
+                                fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
+
+                                    if(err) {
+                                        cb(true, err);
+                                    } else {
+                                        cb(err, {
+                                            path: 'templates/'+params.pageName,
+                                            details: params,
+                                            templateConfig: json
+                                        });
+                                    }
+
+                                });
+
+                            }
+
+                        });
+
+                    });
 
 
-            };
+                };
+
+            });
 
         });
 
@@ -197,7 +210,7 @@ var previewPage = function(params, headers, cb) {
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
         var src = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.json');
-        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.js');
+        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
         fs.readFile(src, 'utf8', function (err, data) {
 
@@ -213,16 +226,25 @@ var previewPage = function(params, headers, cb) {
 
                 //TODO: refactoring to one single function
                 // replace config file with latest changes
-                fs.writeFile(dist, genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
+                fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
 
                     if(err) {
                         cb(true, err);
                     } else {
-                        cb(err, {
-                            path: 'templates/'+params.pageName//,
-                            // details: params,
-                            // templateConfig: json
+
+                        fs.copy(dist+'config.js', dist+'config-bkp.js', function(err, data) {
+                            if (!err) {
+                                console.log('preview page config.js file backup done');
+                                cb(err, {
+                                    path: 'templates/'+params.pageName//,
+                                    // details: params,
+                                    // templateConfig: json
+                                });
+                            } else {
+                                cb(true, err);
+                            }
                         });
+
                     }
 
                 });
