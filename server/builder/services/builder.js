@@ -227,34 +227,49 @@ var previewPage = function(params, headers, cb) {
 
                 var jsonObj = JSON.parse(data);
                 var json = JSON.stringify(jsonObj);
+
                 //TODO: check if config.json file should be updated too (Answer: YES)
                 // for now only config.js is being updated with new menu
                 jsonObj.menu = params.templateConfig.menu;
+                var newConfig = JSON.stringify(jsonObj, null, 2);
 
-                //TODO: refactoring to one single function
-                // replace config file with latest changes
-                fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
+                // update config.json with latest changes 
+                fs.writeFile(dist+'config.json', newConfig, 'utf8', function(err, data) {
 
                     if(err) {
                         cb(true, err);
                     } else {
 
-                        fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
-                            if (!err) {
-                                console.log('preview page config.json file backup done');
-                                cb(err, {
-                                    path: 'templates/'+params.pageName//,
-                                    // details: params,
-                                    // templateConfig: json
-                                });
-                            } else {
+                        //TODO: refactoring to one single function
+                        // replace config file with latest changes
+                        fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
+
+                            if(err) {
                                 cb(true, err);
+                            } else {
+
+                                fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
+                                    if (!err) {
+                                        console.log('preview page config.json file backup done');
+                                        cb(err, {
+                                            path: 'templates/'+params.pageName//,
+                                            // details: params,
+                                            // templateConfig: json
+                                        });
+                                    } else {
+                                        cb(true, err);
+                                    }
+                                });
+
                             }
+
                         });
+
 
                     }
 
                 });
+
 
             }
 
