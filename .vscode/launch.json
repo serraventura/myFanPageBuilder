@@ -2,17 +2,23 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch Extension",
-            "type": "extensionHost",
+            "name": "Launch nodemon",
+            "type": "node",
             "request": "launch",
-            "runtimeExecutable": "${execPath}",
+            "program": "${workspaceRoot}/server/node_modules/nodemon/bin/nodemon.js",
+            "cwd": "${workspaceRoot}",
             "args": [
-                "--extensionDevelopmentPath=${workspaceRoot}"
+                "${workspaceRoot}/server/bin/www"
             ],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
             "stopOnEntry": false,
-            "sourceMaps": true,
-            "outDir": "${workspaceRoot}/out",
-            "preLaunchTask": "npm"
+            "sourceMaps": false,
+            "outDir": "${workspaceRoot}/server/outputlog"
         }
     ]
 }
