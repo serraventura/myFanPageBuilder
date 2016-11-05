@@ -112,90 +112,106 @@ var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        var srcLiveConfig = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
         //if config file backup exist setTemplate should load config file from live template folder
-        fs.stat(srcLiveConfig+'config-bkp.js', function(err, data) {
-
-            var srcBasePath;
+        fs.stat(dist+'config-bkp.js', function(err, data) {
 
             if (!err) {
-                srcBasePath = srcLiveConfig + 'config.js';
+
+                fs.readFile(dist + 'config.json', 'utf8', function (err, data) {
+
+                    if(err){
+                        cb(true, err);
+                    }else{
+
+                        var json = JSON.stringify(data);
+
+                        cb(err, {
+                            path: 'templates/'+params.pageName,
+                            details: params,
+                            templateConfig: json
+                        });                        
+                    }
+
+                });
+
             } else {
+
                 // copy the template version of the config file to the live template
-                srcBasePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
-            }
+                var srcTemplatePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
 
-            fs.copy(srcBasePath, dist + 'config.js', function (err) {
+                fs.copy(srcTemplatePath, dist + 'config.js', function (err) {
 
-                if(err){
-                    cb(true, err);
-                }else{
+                    if(err){
+                        cb(true, err);
+                    }else{
 
-                    // if everything is ok get content of the config file
-                    var file = '';
-                    var rd = readline.createInterface({
-                        input: fs.createReadStream(srcBasePath),
-                        output: process.stdout,
-                        terminal: false
-                    });
+                        // if everything is ok get content of the config file
+                        var file = '';
+                        var rd = readline.createInterface({
+                            input: fs.createReadStream(srcBasePath),
+                            output: process.stdout,
+                            terminal: false
+                        });
 
-                    rd.on('line', function(line) {
+                        rd.on('line', function(line) {
 
-                        var endFile = line.indexOf(');') !== -1;
-                        var beginFile = line.indexOf('use strict') !== -1;
-                        var angularBeginFile = line.indexOf('constant') !== -1;
+                            var endFile = line.indexOf(');') !== -1;
+                            var beginFile = line.indexOf('use strict') !== -1;
+                            var angularBeginFile = line.indexOf('constant') !== -1;
 
-                        // getting only the content needed to manipulate a JSON.
-                        // the javascript part is ignored 
-                        if ( !beginFile && !angularBeginFile && !endFile ) {
-                            file += line.trim();
-                        }
-
-                    });
-
-                    rd.on('close', function(line) {
-
-                        // transform the file content to a JSON.
-                        var jsonObj = JSON.parse('{'+file+'}');
-                        var json = JSON.stringify(jsonObj);
-                        var jsonFormatted = JSON.stringify(jsonObj, null, 2);
-
-                        // save the JSON file representation of the config file 
-                        // to manipulate later dynamically.
-                        fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
-
-                            if(err) {
-                                cb(true, err);
-                            } else {
-
-                                //TODO: refactoring to one single function
-                                // replace config file with latest changes
-                                fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
-
-                                    if(err) {
-                                        cb(true, err);
-                                    } else {
-                                        cb(err, {
-                                            path: 'templates/'+params.pageName,
-                                            details: params,
-                                            templateConfig: json
-                                        });
-                                    }
-
-                                });
-
+                            // getting only the content needed to manipulate a JSON.
+                            // the javascript part is ignored 
+                            if ( !beginFile && !angularBeginFile && !endFile ) {
+                                file += line.trim();
                             }
 
                         });
 
-                    });
+                        rd.on('close', function(line) {
+
+                            // transform the file content to a JSON.
+                            var jsonObj = JSON.parse('{'+file+'}');
+                            var json = JSON.stringify(jsonObj);
+                            var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+
+                            // save the JSON file representation of the config file 
+                            // to manipulate later dynamically.
+                            fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
+
+                                if(err) {
+                                    cb(true, err);
+                                } else {
+
+                                    //TODO: refactoring to one single function
+                                    // replace config file with latest changes
+                                    fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
+
+                                        if(err) {
+                                            cb(true, err);
+                                        } else {
+                                            cb(err, {
+                                                path: 'templates/'+params.pageName,
+                                                details: params,
+                                                templateConfig: json
+                                            });
+                                        }
+
+                                    });
+
+                                }
+
+                            });
+
+                        });
 
 
-                };
+                    };
 
-            });
+                });
+
+            }
 
         });
 
@@ -220,7 +236,7 @@ var previewPage = function(params, headers, cb) {
 
                 var jsonObj = JSON.parse(data);
                 var json = JSON.stringify(jsonObj);
-                //TODO: check if config.json file should be updated too
+                //TODO: check if config.json file should be updated too (Answer: YES)
                 // for now only config.js is being updated with new menu
                 jsonObj.menu = params.templateConfig.menu;
 
