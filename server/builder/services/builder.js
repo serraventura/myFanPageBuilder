@@ -115,25 +115,16 @@ var setTemplate = function(params, headers, cb){
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
         //if config file backup exist setTemplate should load config file from live template folder
-        fs.stat(dist+'config-bkp.js', function(err, data) {
+        fs.stat(dist+'config-bkp.json', function(err, data) {
 
             if (!err) {
 
-                fs.readFile(dist + 'config.json', 'utf8', function (err, data) {
+                var json = JSON.stringify(data);
 
-                    if(err){
-                        cb(true, err);
-                    }else{
-
-                        var json = JSON.stringify(data);
-
-                        cb(err, {
-                            path: 'templates/'+params.pageName,
-                            details: params,
-                            templateConfig: json
-                        });                        
-                    }
-
+                cb(err, {
+                    path: 'templates/'+params.pageName,
+                    details: params,
+                    templateConfig: json
                 });
 
             } else {
@@ -150,7 +141,7 @@ var setTemplate = function(params, headers, cb){
                         // if everything is ok get content of the config file
                         var file = '';
                         var rd = readline.createInterface({
-                            input: fs.createReadStream(srcBasePath),
+                            input: fs.createReadStream(srcTemplatePath),
                             output: process.stdout,
                             terminal: false
                         });
@@ -248,9 +239,9 @@ var previewPage = function(params, headers, cb) {
                         cb(true, err);
                     } else {
 
-                        fs.copy(dist+'config.js', dist+'config-bkp.js', function(err, data) {
+                        fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
                             if (!err) {
-                                console.log('preview page config.js file backup done');
+                                console.log('preview page config.json file backup done');
                                 cb(err, {
                                     path: 'templates/'+params.pageName//,
                                     // details: params,
