@@ -118,7 +118,7 @@ var setTemplate = function(params, headers, cb){
         fs.stat(dist+'config-bkp.json', function(err, data) {
 
             if (!err) {
-
+                console.log('using preview backup');
                 var json = JSON.stringify(data);
 
                 cb(err, {
@@ -224,7 +224,6 @@ var previewPage = function(params, headers, cb) {
             if(err){
                 cb(true, err);
             }else{
-
                 var jsonObj = JSON.parse(data);
                 var json = JSON.stringify(jsonObj);
 
