@@ -2,14 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch nodemon",
+            "name": "Launch node express",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceRoot}/server/node_modules/nodemon/bin/nodemon.js",
+            // "program": "${workspaceRoot}/server/node_modules/nodemon/bin/nodemon.js",
+            // "args": [
+            //     "${workspaceRoot}/server/bin/www"
+            // ],
+            "program": "${workspaceRoot}/server/bin/www",
             "cwd": "${workspaceRoot}",
-            "args": [
-                "${workspaceRoot}/server/bin/www"
-            ],
+            "port": 5858,
             "runtimeArgs": [
                 "--nolazy"
             ],
@@ -17,8 +19,7 @@
                 "NODE_ENV": "development"
             },
             "stopOnEntry": false,
-            "sourceMaps": false,
-            "outDir": "${workspaceRoot}/server/outputlog"
+            "sourceMaps": false
         }
     ]
 }
