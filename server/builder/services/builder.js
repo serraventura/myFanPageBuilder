@@ -5,6 +5,7 @@ var _ = require('lodash');
 var fs = require('fs-extra');
 var readline = require('readline');
 var path = require('path');
+var cheerio = require('cheerio');
 
 var settings = require('../../includes/settings');
 var utils = require('../../includes/utils');
@@ -107,7 +108,7 @@ var getUser = function(params, headers, cb){
 
 }
 
-//TODO: refactoring to remove deep inner functions
+//TODO: refactoring to remove deep inner functions (using promises)
 var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
@@ -218,59 +219,115 @@ var previewPage = function(params, headers, cb) {
 
         var src = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/config.json');
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
+        var indexHTML = path.join(__dirname + '/../../live-pages/'+params.pageName+'/index.html');
 
-        fs.readFile(src, 'utf8', function (err, data) {
+        var defer = Q.defer();
 
-            if(err){
-                cb(true, err);
-            }else{
-                var jsonObj = JSON.parse(data);
-                var json = JSON.stringify(jsonObj);
+        var updateConfigFile = function() {
 
-                //TODO: check if config.json file should be updated too (Answer: YES)
-                // for now only config.js is being updated with new menu
-                jsonObj.menu = params.templateConfig.menu;
-                var newConfig = JSON.stringify(jsonObj, null, 2);
+            fs.readFile(src, 'utf8', function (err, data) {
 
-                // update config.json with latest changes 
-                fs.writeFile(dist+'config.json', newConfig, 'utf8', function(err, data) {
+                if(err){
+                    // cb(true, err);
+                    defer.reject(err);
+                }else{
+                    var jsonObj = JSON.parse(data);
+                    var json = JSON.stringify(jsonObj);
 
-                    if(err) {
-                        cb(true, err);
-                    } else {
+                    //TODO: check if config.json file should be updated too (Answer: YES)
+                    // for now only config.js is being updated with new menu
+                    jsonObj.menu = params.templateConfig.menu;
+                    var newConfig = JSON.stringify(jsonObj, null, 2);
 
-                        //TODO: refactoring to one single function
-                        // replace config file with latest changes
-                        fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
+                    // update config.json with latest changes 
+                    fs.writeFile(dist+'config.json', newConfig, 'utf8', function(err, data) {
 
-                            if(err) {
-                                cb(true, err);
-                            } else {
+                        if(err) {
+                            // cb(true, err);
+                            defer.reject(err);
+                        } else {
 
-                                fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
-                                    if (!err) {
-                                        console.log('preview page config.json file backup done');
-                                        cb(err, {
-                                            path: 'templates/'+params.pageName//,
-                                            // details: params,
-                                            // templateConfig: json
-                                        });
-                                    } else {
-                                        cb(true, err);
-                                    }
-                                });
+                            //TODO: refactoring to one single function
+                            // replace config file with latest changes
+                            fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
 
-                            }
+                                if(err) {
+                                    // cb(true, err);
+                                    defer.reject(err);
+                                } else {
 
-                        });
+                                    fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
+                                        if (!err) {
+                                            console.log('preview page config.json file backup done');
+                                            defer.resolve({
+                                                path: 'templates/'+params.pageName
+                                            });
+                                            // cb(err, {
+                                            //     path: 'templates/'+params.pageName//,
+                                            //     // details: params,
+                                            //     // templateConfig: json
+                                            // });
+                                        } else {
+                                            // cb(true, err);
+                                            defer.reject(err);
+                                        }
+                                    });
+
+                                }
+
+                            });
 
 
-                    }
+                        }
 
-                });
+                    });
 
 
-            }
+                }
+
+            });
+
+            return defer.promise;
+
+        }
+
+        var updateIndexHTML = function() {
+
+            fs.readFile(indexHTML, 'utf8', function (err, data) {
+
+                if (err) {
+                    defer.reject(err);
+                } else {
+
+                    var DOM = cheerio.load(data);
+                    var scripts = DOM('script');
+                    scripts.eq(scripts.length-1).attr('src', 'src/config/config.js?rel='+Math.random());
+
+                    fs.writeFile(indexHTML, DOM.html(), 'utf8', function(err, data) {
+
+                        if (err) {
+                            defer.reject(err);
+                        } else {
+                            defer.resolve(data);
+                        }
+
+                    });
+
+                }
+
+            });
+
+            return defer.promise;
+        }
+
+        var arrPromises = [
+            updateConfigFile(),
+            updateIndexHTML()
+        ]; 
+
+        Q.all(arrPromises, function (data){
+
+            console.log(data);
 
         });
 
