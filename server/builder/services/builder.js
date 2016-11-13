@@ -237,6 +237,8 @@ var previewPage = function(params, headers, cb) {
                     //TODO: check if config.json file should be updated too (Answer: YES)
                     // for now only config.js is being updated with new menu
                     jsonObj.menu = params.templateConfig.menu;
+                    jsonObj.enableCache = false;
+
                     var newConfig = JSON.stringify(jsonObj, null, 2);
 
                     // update config.json with latest changes 
