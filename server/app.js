@@ -35,7 +35,7 @@ app.use(bodyParser.json());
  * Development Settings
  */
 
-if (app.get('env') === 'development' || app.get('env') === 'production') {
+if (app.get('env') === 'development') {
 	console.log('mode: development');
 	// This will change in production since we'll be using the dist folder
 	// This covers serving up the index page
@@ -82,7 +82,17 @@ if (app.get('env') === 'production') {
 app.use('/builder', builder);
 app.use('/imageTemplates', express.static(__dirname + '/_engine/myFanPage/dist/src/webcontent/views/templates/'));
 //app.use('/templates', express.static(__dirname + '/_engine/myFanPage/dist/'));
-app.use('/templates', express.static(__dirname + '/live-pages/'));
+app.use('/templates', express.static(__dirname + '/live-pages/', {
+	etag: false,
+	maxage: 0,
+	dotfiles: 'deny',
+	setHeaders: function(res, path) {
+		res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+		res.header('Expires', '-1');
+		res.header('Pragma', 'no-cache');
+	}
+}));
+
 cronJob.getNewTemplates().start();
 
 module.exports = app;
