@@ -116,16 +116,16 @@ var setTemplate = function(params, headers, cb){
         var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
         //if config file backup exist setTemplate should load config file from live template folder
-        fs.stat(dist+'config-bkp.json', function(err, data) {
+        fs.readFile(dist+'config-bkp.json', 'utf8', function(err, data) {
 
             if (!err) {
                 console.log('using preview backup');
-                var json = JSON.stringify(data);
+                // var json = JSON.stringify(data);
 
                 cb(err, {
                     path: 'templates/'+params.pageName,
                     details: params,
-                    templateConfig: json
+                    templateConfig: data
                 });
 
             } else {
@@ -327,11 +327,15 @@ var previewPage = function(params, headers, cb) {
             updateIndexHTML()
         ]; 
 
-        Q.all(arrPromises, function (data){
-
-            console.log(data);
-
-        });
+        Q.all(arrPromises)
+            .then(function (data) {
+                cb(null, {
+                    pageName: params.pageName
+                });
+            })
+            .catch(function(err) {
+                cb(err, null);
+            });
 
     });
 

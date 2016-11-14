@@ -7,7 +7,7 @@ import {
     OPEN_LIVE_TEMPLATE,
     SET_TEMPLATE_CONFIG_MENU_ITEM,
     CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
-    PREVIEW_PAGE,
+    // PREVIEW_PAGE,
     TEMPLATE_MODIFIED
 } from "./constants";
 
@@ -114,17 +114,17 @@ export function previewPage() {
                     throw new Error(data.customMessage || data.message);
                 } else {
 
-                    dispatch({
-                        type: PREVIEW_PAGE,
-                        payload: {
-                            templateConfig: JSON.parse(data.response.templateConfig)
-                        }
-                    });
+                    // dispatch({
+                    //     type: PREVIEW_PAGE,
+                    //     payload: {
+                    //         selectedPageTemplateUrl: API().templates + data.response.pageName + '?_=' + Math.random()
+                    //     }
+                    // });
 
                     dispatch({
                         type: TEMPLATE_MODIFIED,
                         payload: {
-                            selectedPageTemplateUrl: API().templates + page,
+                            selectedPageTemplateUrl: API().templates + data.response.pageName + '?_=' + Math.random(),
                             templateModified: new Date()
                         }
                     });
