@@ -281,6 +281,12 @@ export function getListTemplates() {
 
 }
 
+export function closeLiveTemplate() {
+    return (dispatch) => {
+        dispatch( openLiveTemplate(false) );
+    }
+}
+
 export function openLiveTemplate(open) {
     return {
         type: OPEN_LIVE_TEMPLATE,

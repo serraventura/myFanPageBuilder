@@ -9,7 +9,8 @@ import {
     signUp,
     setTemplateConfigMenuItem,
     changeTemplateConfigMenuItem,
-    previewPage
+    previewPage,
+    closeLiveTemplate
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
@@ -65,6 +66,7 @@ export class Builder extends React.Component {
                     onSetupMenuItem={this.props.setTemplateConfigMenuItem}
                     onChangeMenuItem={this.props.changeTemplateConfigMenuItem}
                     onPreview={this.props.previewPage}
+                    onClose={this.props.closeLiveTemplate}
                 />
 
                 <button onClick={ e => this.props.signUp() }>
@@ -89,7 +91,8 @@ export default connect(mapStateToProps, {
     signUp,
     setTemplateConfigMenuItem,
     changeTemplateConfigMenuItem,
-    previewPage
+    previewPage,
+    closeLiveTemplate
 })(Builder);
 
 // export default Builder;

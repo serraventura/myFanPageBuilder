@@ -58,7 +58,7 @@ const LiveTemplate = (props) => {
 
                 </div>
 
-                <button>Close</button><button>Publish</button><button onClick={ e => props.onPreview() }>Preview with my Fanpage</button>
+                <button onClick={ e => props.onClose()}>Close</button><button>Publish</button><button onClick={ e => props.onPreview() }>Preview with my Fanpage</button>
 
             </div>
             <div className="live-template-footer"></div>
