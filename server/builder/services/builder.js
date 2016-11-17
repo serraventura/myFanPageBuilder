@@ -109,6 +109,88 @@ var getUser = function(params, headers, cb){
 
 }
 
+var copyConfigFromTemplate = function(templateName, pageName, cb) {
+
+    // copy the template version of the config file to the live template
+    var srcTemplatePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+templateName+'/config.js');
+    var dist = path.join(__dirname + '/../../live-pages/'+pageName+'/src/config/');
+
+    //TODO: review the real need to use copy here
+    fs.copy(srcTemplatePath, dist + 'config.js', function (err) {
+
+        if(err){
+            cb(true, err);
+        }else{
+
+            // if everything is ok get content of the config file
+            var file = '';
+            var rd = readline.createInterface({
+                input: fs.createReadStream(srcTemplatePath),
+                output: process.stdout,
+                terminal: false
+            });
+
+            rd.on('line', function(line) {
+
+                var endFile = line.indexOf(');') !== -1;
+                var beginFile = line.indexOf('use strict') !== -1;
+                var angularBeginFile = line.indexOf('constant') !== -1;
+
+                // getting only the content needed to manipulate a JSON.
+                // the javascript part is ignored 
+                if ( !beginFile && !angularBeginFile && !endFile ) {
+                    file += line.trim();
+                }
+
+            });
+
+            rd.on('close', function(line) {
+
+                // transform the file content to a JSON.
+                var jsonObj = JSON.parse('{'+file+'}');
+                var json = JSON.stringify(jsonObj);
+                var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+
+                // save the JSON file representation of the config file 
+                // to manipulate later dynamically.
+                fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
+
+                    if(err) {
+                        cb(true, err);
+                    } else {
+
+                        //TODO: refactoring to one single function
+                        // replace config file with latest changes
+                        fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+
+                            if(err) {
+                                cb(true, err);
+                            } else {
+                                cb(err, {
+                                    path: 'templates/'+pageName,
+                                    details: {
+                                        pageName: pageName,
+                                        templateName: templateName
+                                    },
+                                    templateConfig: json
+                                });
+                            }
+
+                        });
+
+                    }
+
+                });
+
+            });
+
+
+        };
+
+    });
+
+}
+
 //TODO: refactoring to remove deep inner functions (using promises)
 var setTemplate = function(params, headers, cb){
 
@@ -138,77 +220,8 @@ var setTemplate = function(params, headers, cb){
 
                     } else {
 
-                        // copy the template version of the config file to the live template
-                        var srcTemplatePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
-
-                        fs.copy(srcTemplatePath, dist + 'config.js', function (err) {
-
-                            if(err){
-                                cb(true, err);
-                            }else{
-
-                                // if everything is ok get content of the config file
-                                var file = '';
-                                var rd = readline.createInterface({
-                                    input: fs.createReadStream(srcTemplatePath),
-                                    output: process.stdout,
-                                    terminal: false
-                                });
-
-                                rd.on('line', function(line) {
-
-                                    var endFile = line.indexOf(');') !== -1;
-                                    var beginFile = line.indexOf('use strict') !== -1;
-                                    var angularBeginFile = line.indexOf('constant') !== -1;
-
-                                    // getting only the content needed to manipulate a JSON.
-                                    // the javascript part is ignored 
-                                    if ( !beginFile && !angularBeginFile && !endFile ) {
-                                        file += line.trim();
-                                    }
-
-                                });
-
-                                rd.on('close', function(line) {
-
-                                    // transform the file content to a JSON.
-                                    var jsonObj = JSON.parse('{'+file+'}');
-                                    var json = JSON.stringify(jsonObj);
-                                    var jsonFormatted = JSON.stringify(jsonObj, null, 2);
-
-                                    // save the JSON file representation of the config file 
-                                    // to manipulate later dynamically.
-                                    fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
-
-                                        if(err) {
-                                            cb(true, err);
-                                        } else {
-
-                                            //TODO: refactoring to one single function
-                                            // replace config file with latest changes
-                                            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
-
-                                                if(err) {
-                                                    cb(true, err);
-                                                } else {
-                                                    cb(err, {
-                                                        path: 'templates/'+params.pageName,
-                                                        details: params,
-                                                        templateConfig: json
-                                                    });
-                                                }
-
-                                            });
-
-                                        }
-
-                                    });
-
-                                });
-
-
-                            };
-
+                        copyConfigFromTemplate(params.templateName, params.pageName, function(err, data) {
+                            cb(err, data);
                         });
 
                     }
