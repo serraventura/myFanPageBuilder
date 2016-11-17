@@ -37,7 +37,8 @@ export function API() {
 		imageTemplates: domain + "imageTemplates",
 		templates: domain + "templates/",
 		setTemplate: domain + "builder/settemplate",
-		previewPage: domain + "builder/previewpage"
+		previewPage: domain + "builder/previewpage",
+		createUserSpace: domain + "builder/createuserspace"
 	}
 
 }

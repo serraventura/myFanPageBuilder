@@ -26,40 +26,7 @@ var save = function(params, headers, cb) {
 
             if(!user){
                 User.save(params, function(err, ret){
-
-                    if(!err){
-
-                        try{
-
-                            var page = params.pages.filter(function(item) {
-                                return item.id === params.selectedPageId
-                            });
-
-                            if (page.length > 0){
-                                //get from link the page name
-                                page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
-                            } else {
-                                throw new Error('No page name found. You need the page name to create a user space.');
-                            }
-
-                        }catch(err){
-                            cb(err, undefined);
-                        };
-
-                        User.createUserSpace(page, function(err, info) {
-
-                            if(!err){
-                                cb(err, ret);
-                            }else{
-                                cb(err, info);
-                            }
-
-                        });
-
-                    }else{
-                        cb(err, ret);
-                    }
-
+                    cb(err, ret);
                 });
             }else{
                 cb('User already exist.', undefined);
@@ -70,6 +37,40 @@ var save = function(params, headers, cb) {
     }, function(err){
         cb(err, false);
     });
+
+}
+
+var createUserSpace = function(page, params, headers, cb) {
+
+    if (!page && (!headers || !params)) return cb('Not possible to create user space. no parameters passed.', false);
+
+    var userSpaceCreation = function(page) {
+        User.createUserSpace(page, function(err, info) {
+            cb(err, info);
+        });
+    };
+
+    if (page) {
+        userSpaceCreation(page);
+    } else {
+
+        FB.tokenValidation(headers['auth-token']).then(function (data) {
+            var page = params.pages.filter(function(item) {
+                return item.id === params.selectedPageId
+            });
+
+            if (page.length > 0){
+                //get from link the page name
+                page = page[0].link.match(/^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/)[1];
+            } else {
+                throw new Error('No page name found. You need the page name to create a user space.');
+            }
+            userSpaceCreation(page);
+        }, function(err){
+            cb(err, false);
+        });
+
+    }
 
 }
 
@@ -113,96 +114,106 @@ var setTemplate = function(params, headers, cb){
 
     FB.tokenValidation(headers['auth-token']).then(function (data) {
 
-        var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
+        createUserSpace(params.pageName, null, null, function(err, data) {
 
-        //if config file backup exist setTemplate should load config file from live template folder
-        fs.readFile(dist+'config-bkp.json', 'utf8', function(err, data) {
-
-            if (!err) {
-                console.log('using preview backup');
-                // var json = JSON.stringify(data);
-
-                cb(err, {
-                    path: 'templates/'+params.pageName,
-                    details: params,
-                    templateConfig: data
-                });
-
+            if (err) {
+                cb(err);   
             } else {
 
-                // copy the template version of the config file to the live template
-                var srcTemplatePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
+                //TODO: change template accordingly. currently using same template all the time
+                var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
-                fs.copy(srcTemplatePath, dist + 'config.js', function (err) {
+                //if config file backup exist setTemplate should load config file from live template folder
+                fs.readFile(dist+'config-bkp.json', 'utf8', function(err, data) {
 
-                    if(err){
-                        cb(true, err);
-                    }else{
+                    if (!err) {
+                        console.log('using preview backup');
+                        // var json = JSON.stringify(data);
 
-                        // if everything is ok get content of the config file
-                        var file = '';
-                        var rd = readline.createInterface({
-                            input: fs.createReadStream(srcTemplatePath),
-                            output: process.stdout,
-                            terminal: false
+                        cb(err, {
+                            path: 'templates/'+params.pageName,
+                            details: params,
+                            templateConfig: data
                         });
 
-                        rd.on('line', function(line) {
+                    } else {
 
-                            var endFile = line.indexOf(');') !== -1;
-                            var beginFile = line.indexOf('use strict') !== -1;
-                            var angularBeginFile = line.indexOf('constant') !== -1;
+                        // copy the template version of the config file to the live template
+                        var srcTemplatePath = path.join(__dirname + '/../../_engine/myFanPage/app/src/webcontent/views/templates/'+params.templateName+'/config.js');
 
-                            // getting only the content needed to manipulate a JSON.
-                            // the javascript part is ignored 
-                            if ( !beginFile && !angularBeginFile && !endFile ) {
-                                file += line.trim();
-                            }
+                        fs.copy(srcTemplatePath, dist + 'config.js', function (err) {
 
-                        });
+                            if(err){
+                                cb(true, err);
+                            }else{
 
-                        rd.on('close', function(line) {
+                                // if everything is ok get content of the config file
+                                var file = '';
+                                var rd = readline.createInterface({
+                                    input: fs.createReadStream(srcTemplatePath),
+                                    output: process.stdout,
+                                    terminal: false
+                                });
 
-                            // transform the file content to a JSON.
-                            var jsonObj = JSON.parse('{'+file+'}');
-                            var json = JSON.stringify(jsonObj);
-                            var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+                                rd.on('line', function(line) {
 
-                            // save the JSON file representation of the config file 
-                            // to manipulate later dynamically.
-                            fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
+                                    var endFile = line.indexOf(');') !== -1;
+                                    var beginFile = line.indexOf('use strict') !== -1;
+                                    var angularBeginFile = line.indexOf('constant') !== -1;
 
-                                if(err) {
-                                    cb(true, err);
-                                } else {
+                                    // getting only the content needed to manipulate a JSON.
+                                    // the javascript part is ignored 
+                                    if ( !beginFile && !angularBeginFile && !endFile ) {
+                                        file += line.trim();
+                                    }
 
-                                    //TODO: refactoring to one single function
-                                    // replace config file with latest changes
-                                    fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
+                                });
+
+                                rd.on('close', function(line) {
+
+                                    // transform the file content to a JSON.
+                                    var jsonObj = JSON.parse('{'+file+'}');
+                                    var json = JSON.stringify(jsonObj);
+                                    var jsonFormatted = JSON.stringify(jsonObj, null, 2);
+
+                                    // save the JSON file representation of the config file 
+                                    // to manipulate later dynamically.
+                                    fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
 
                                         if(err) {
                                             cb(true, err);
                                         } else {
-                                            cb(err, {
-                                                path: 'templates/'+params.pageName,
-                                                details: params,
-                                                templateConfig: json
+
+                                            //TODO: refactoring to one single function
+                                            // replace config file with latest changes
+                                            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, params.templateName), 'utf8', function(err, data) {
+
+                                                if(err) {
+                                                    cb(true, err);
+                                                } else {
+                                                    cb(err, {
+                                                        path: 'templates/'+params.pageName,
+                                                        details: params,
+                                                        templateConfig: json
+                                                    });
+                                                }
+
                                             });
+
                                         }
 
                                     });
 
-                                }
+                                });
 
-                            });
+
+                            };
 
                         });
 
-
-                    };
+                    }
 
                 });
-
             }
 
         });
@@ -359,3 +370,4 @@ exports.listTemplates = listTemplates;
 exports.getUser = getUser;
 exports.save = save;
 exports.previewPage = previewPage;
+exports.createUserSpace = createUserSpace;

@@ -107,6 +107,45 @@ var listTemplates = function(req, res) {
 
 };
 
+var createUserSpace = function(req, res) {
+
+    builderService.createUserSpace(null, req.body, req.headers, function(err, ret){
+
+        var http;
+
+        if(!err && ret){
+
+            http = Return.http.ok;
+            http.customMessage = '';
+            http.response = ret;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }else{
+
+            if( _.has(err, 'error', 'type', 'OAuthException') ){
+                http = Return.http.error;
+                http.customMessage = err.error.message;
+            }else if( _.has(err, 'message') ){
+                http = Return.http.error;
+                http.customMessage = err.message;
+            }else{
+                http = Return.http.badRequest;
+                http.customMessage = err;
+            }
+
+            http.response = err;
+
+            res.status(http.statusCode);
+            res.json(http);
+
+        }
+
+    });
+
+};
+
 var getUser = function(req, res){
 
     builderService.getUser(req.query, req.headers, function(err, user, msg){

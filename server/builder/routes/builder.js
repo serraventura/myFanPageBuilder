@@ -11,6 +11,10 @@ router.post('/previewpage', function(req, res) {
     builderController.previewPage(req, res);
 });
 
+router.post('/createuserspace', function(req, res) {
+    builderController.createUserSpace(req, res);
+});
+
 router.post('/settemplate', function(req, res) {
     builderController.setTemplate(req, res);
 });

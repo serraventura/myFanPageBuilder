@@ -75,16 +75,37 @@ var createUserSpace = function(pageName, cb) {
 
     var srcBasePath = path.join(__dirname + '/../_engine/myFanPage/dist');
     var dist = path.join(__dirname + '/../live-pages/'+pageName);
+    var configFile = path.join(__dirname + '/../live-pages/'+pageName+'/src/config/config.js');
 
-    fs.copy(srcBasePath, dist, function (err) {
+    fs.readFile(configFile, 'utf8', function(err, data) {
 
-        if(err){
-            cb(true, err);
-        }else{
-            cb(err, 'success');
+        if (err) {
+
+            fs.copy(srcBasePath, dist, function (err) {
+
+                if(err){
+                    cb(err, err);
+                }else{
+                    cb(err, {
+                        status: 'success',
+                        userSpaceCreated: true
+                    });
+                }
+
+            });
+
+        } else {
+
+            cb(null, {
+                status: 'success',
+                userSpaceCreated: false
+            });
+
         }
 
     });
+
+
 
 }
 
