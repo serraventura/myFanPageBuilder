@@ -34,12 +34,16 @@ export function getFacebookData(facebookData) {
 
             window.sessionStorage.setItem('fb-auth-token', loginStatus.authResponse.accessToken);
 
-            dispatch( loading(false) );
-
             dispatch({
                 type: UPDATE_FB_DATA,
                 payload: facebookData
             });
+
+            if (loginStatus.status === 'connected') {
+                dispatch(signUp());
+            }
+
+            dispatch( loading(false) );
 
         });
 
@@ -235,10 +239,12 @@ export function signUp() {
                     throw new Error(data.customMessage || data.message);
                 } else {
 
-                    getListTemplates().then(data => {
-                        dispatch(data);
-                        dispatch( loading(false) );
-                    });
+                    // getListTemplates().then(data => {
+                    //     dispatch(data);
+                    //     dispatch( loading(false) );
+                    // });
+                    console.log('User created successfully.');
+                    dispatch( loading(false) );
 
                 }
 
@@ -257,7 +263,8 @@ export function signUp() {
 
 export function getListTemplates() {
 
-    let p = new Promise( (resolve, reject) => {
+    return (dispatch, getState) => {
+    // let p = new Promise( (resolve, reject) => {
 
         let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
 
@@ -265,13 +272,40 @@ export function getListTemplates() {
 
         fetch( API().getListTemplates, defaultHttpParams ).then( res => res.json() ).then(data => {
 
-            resolve({
+            dispatch({
                 type: SET_TEMPLATE_LIST,
                 payload: data.response
             });
 
         }).catch(err => {
             console.error('Action getListTemplates() Error: ', err);
+            // reject(err);
+        });
+
+    // });
+    };
+
+    // return p;
+
+}
+
+export function createUserSpace() {
+
+    let p = new Promise( (resolve, reject) => {
+
+        let defaultHttpParams = Object.assign({}, DEFAULT_HTTP_PARAMS);
+
+        defaultHttpParams.headers['auth-token'] = window.sessionStorage.getItem('fb-auth-token');
+
+        fetch( API().createUserSpace, defaultHttpParams ).then( res => res.json() ).then(data => {
+
+            resolve({
+                type: SET_TEMPLATE_LIST,
+                payload: data.response
+            });
+
+        }).catch(err => {
+            console.error('Action createUserSpace() Error: ', err);
             reject(err);
         });
 

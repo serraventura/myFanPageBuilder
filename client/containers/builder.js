@@ -10,7 +10,8 @@ import {
     setTemplateConfigMenuItem,
     changeTemplateConfigMenuItem,
     previewPage,
-    closeLiveTemplate
+    closeLiveTemplate,
+    getListTemplates
 } from "../actions";
 
 import FanPageList from "../components/fanPageList";
@@ -69,7 +70,7 @@ export class Builder extends React.Component {
                     onClose={this.props.closeLiveTemplate}
                 />
 
-                <button onClick={ e => this.props.signUp() }>
+                <button onClick={ e => this.props.getListTemplates() }>
                     Next
                 </button>
             </div>
@@ -92,7 +93,8 @@ export default connect(mapStateToProps, {
     setTemplateConfigMenuItem,
     changeTemplateConfigMenuItem,
     previewPage,
-    closeLiveTemplate
+    closeLiveTemplate,
+    getListTemplates
 })(Builder);
 
 // export default Builder;
