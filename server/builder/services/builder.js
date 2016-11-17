@@ -109,6 +109,31 @@ var getUser = function(params, headers, cb){
 
 }
 
+var generateConfigFiles = function(templateName, pageName, fileContent, cb) {
+
+    var dist = path.join(__dirname + '/../../live-pages/'+pageName+'/src/config/');
+    var jsonObj = JSON.parse(fileContent);
+
+    // save the JSON file representation of the config file 
+    // to manipulate later dynamically.
+    fs.writeFile(dist + 'config.json', fileContent, 'utf8', function(err, data) {
+
+        if(err) {
+            cb(true, err);
+        } else {
+
+            //TODO: refactoring to one single function
+            // replace config file with latest changes
+            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+                cb(err, data);
+            });
+
+        }
+
+    });
+
+}
+
 var copyConfigFromTemplate = function(templateName, pageName, cb) {
 
     // copy the template version of the config file to the live template
@@ -151,33 +176,19 @@ var copyConfigFromTemplate = function(templateName, pageName, cb) {
                 var json = JSON.stringify(jsonObj);
                 var jsonFormatted = JSON.stringify(jsonObj, null, 2);
 
-                // save the JSON file representation of the config file 
-                // to manipulate later dynamically.
-                fs.writeFile(dist + 'config.json', jsonFormatted, 'utf8', function(err, data) {
+                generateConfigFiles(templateName, pageName, jsonFormatted, function(err, data) {
 
-                    if(err) {
-                        cb(true, err);
+                    if (err) {
+                        cb(err);
                     } else {
-
-                        //TODO: refactoring to one single function
-                        // replace config file with latest changes
-                        fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
-
-                            if(err) {
-                                cb(true, err);
-                            } else {
-                                cb(err, {
-                                    path: 'templates/'+pageName,
-                                    details: {
-                                        pageName: pageName,
-                                        templateName: templateName
-                                    },
-                                    templateConfig: json
-                                });
-                            }
-
+                        cb(err, {
+                            path: 'templates/'+pageName,
+                            details: {
+                                pageName: pageName,
+                                templateName: templateName
+                            },
+                            templateConfig: json
                         });
-
                     }
 
                 });
@@ -209,13 +220,22 @@ var setTemplate = function(params, headers, cb){
                 fs.readFile(dist+'config-bkp.json', 'utf8', function(err, data) {
 
                     if (!err) {
-                        console.log('using preview backup');
-                        // var json = JSON.stringify(data);
 
-                        cb(err, {
-                            path: 'templates/'+params.pageName,
-                            details: params,
-                            templateConfig: data
+                        console.log('using preview backup');
+                        generateConfigFiles(params.templateName, params.pageName, data, function(err) {
+
+                            if (err) {
+                                cb(err);
+                            } else {
+
+                                cb(err, {
+                                    path: 'templates/'+params.pageName,
+                                    details: params,
+                                    templateConfig: data
+                                });
+
+                            }
+
                         });
 
                     } else {
