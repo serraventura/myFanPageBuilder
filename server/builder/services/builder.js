@@ -136,7 +136,7 @@ var generateConfigFiles = function(templateName, pageName, fileContent, makeBack
                         cb(err);
                     } else {
 
-                        fs.copy(dist+'config.json', dist+'config-bkp-'+templateName+'.json', function(err, data) {
+                        fs.copy(dist+'config.json', dist+'config-bkp-'+pageName+'-'+templateName+'.json', function(err, data) {
                             cb(err, data);
                         });
 
@@ -235,7 +235,7 @@ var setTemplate = function(params, headers, cb){
                 var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
                 //if config file backup exist setTemplate should load config file from live template folder
-                fs.readFile(dist+'config-bkp-'+params.templateName+'.json', 'utf8', function(err, data) {
+                fs.readFile(dist+'config-bkp-'+params.pageName+'-'+params.templateName+'.json', 'utf8', function(err, data) {
 
                     if (!err) {
 
