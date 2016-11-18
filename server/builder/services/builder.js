@@ -109,7 +109,7 @@ var getUser = function(params, headers, cb){
 
 }
 
-var generateConfigFiles = function(templateName, pageName, fileContent, cb) {
+var generateConfigFiles = function(templateName, pageName, fileContent, makeBackup, cb) {
 
     var dist = path.join(__dirname + '/../../live-pages/'+pageName+'/src/config/');
     var jsonObj = JSON.parse(fileContent);
@@ -122,11 +122,29 @@ var generateConfigFiles = function(templateName, pageName, fileContent, cb) {
             cb(true, err);
         } else {
 
-            //TODO: refactoring to one single function
-            // replace config file with latest changes
-            fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
-                cb(err, data);
-            });
+            if (makeBackup) {
+
+                fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+                    cb(err, data);
+                });
+
+            } else {
+
+                fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+
+                    if(err) {
+                        cb(err);
+                    } else {
+
+                        fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
+                            cb(err, data);
+                        });
+
+                    }
+
+                });
+
+            }
 
         }
 
@@ -176,7 +194,7 @@ var copyConfigFromTemplate = function(templateName, pageName, cb) {
                 var json = JSON.stringify(jsonObj);
                 var jsonFormatted = JSON.stringify(jsonObj, null, 2);
 
-                generateConfigFiles(templateName, pageName, jsonFormatted, function(err, data) {
+                generateConfigFiles(templateName, pageName, jsonFormatted, false, function(err, data) {
 
                     if (err) {
                         cb(err);
@@ -222,7 +240,7 @@ var setTemplate = function(params, headers, cb){
                     if (!err) {
 
                         console.log('using preview backup');
-                        generateConfigFiles(params.templateName, params.pageName, data, function(err) {
+                        generateConfigFiles(params.templateName, params.pageName, data, false, function(err) {
 
                             if (err) {
                                 cb(err);
@@ -285,49 +303,18 @@ var previewPage = function(params, headers, cb) {
 
                     var newConfig = JSON.stringify(jsonObj, null, 2);
 
-                    // update config.json with latest changes 
-                    fs.writeFile(dist+'config.json', newConfig, 'utf8', function(err, data) {
+                    generateConfigFiles(null, params.pageName, newConfig, true, function(err, data) {
 
-                        if(err) {
-                            // cb(true, err);
-                            defer.reject(err);
-                        } else {
-
-                            //TODO: refactoring to one single function
-                            // replace config file with latest changes
-                            fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
-
-                                if(err) {
-                                    // cb(true, err);
-                                    defer.reject(err);
-                                } else {
-
-                                    fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
-                                        if (!err) {
-                                            console.log('preview page config.json file backup done');
-                                            defer.resolve({
-                                                path: 'templates/'+params.pageName
-                                            });
-                                            // cb(err, {
-                                            //     path: 'templates/'+params.pageName//,
-                                            //     // details: params,
-                                            //     // templateConfig: json
-                                            // });
-                                        } else {
-                                            // cb(true, err);
-                                            defer.reject(err);
-                                        }
-                                    });
-
-                                }
-
+                        if (!err) {
+                            console.log('preview page config.json file backup done');
+                            defer.resolve({
+                                path: 'templates/'+params.pageName
                             });
-
-
+                        } else {
+                            defer.reject(err);
                         }
 
                     });
-
 
                 }
 
