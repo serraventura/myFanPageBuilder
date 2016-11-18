@@ -102,7 +102,8 @@ export function previewPage() {
         try {
             defaultHttpParams.body = JSON.stringify({
                 templateConfig: facebookData.templateConfig,
-                pageName: page
+                pageName: page,
+                templateName: facebookData.selectedTemplate
             });
         } catch(err) {
             console.error('Action previewPage() stringify Error: ', err);

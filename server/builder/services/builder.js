@@ -122,21 +122,21 @@ var generateConfigFiles = function(templateName, pageName, fileContent, makeBack
             cb(true, err);
         } else {
 
-            if (makeBackup) {
+            if (!makeBackup) {
 
-                fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+                fs.writeFile(dist + 'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
                     cb(err, data);
                 });
 
             } else {
 
-                fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj, templateName), 'utf8', function(err, data) {
+                fs.writeFile(dist+'config.js', genenerateConfigFileJS(jsonObj), 'utf8', function(err, data) {
 
                     if(err) {
                         cb(err);
                     } else {
 
-                        fs.copy(dist+'config.json', dist+'config-bkp.json', function(err, data) {
+                        fs.copy(dist+'config.json', dist+'config-bkp-'+templateName+'.json', function(err, data) {
                             cb(err, data);
                         });
 
@@ -235,7 +235,7 @@ var setTemplate = function(params, headers, cb){
                 var dist = path.join(__dirname + '/../../live-pages/'+params.pageName+'/src/config/');
 
                 //if config file backup exist setTemplate should load config file from live template folder
-                fs.readFile(dist+'config-bkp.json', 'utf8', function(err, data) {
+                fs.readFile(dist+'config-bkp-'+params.templateName+'.json', 'utf8', function(err, data) {
 
                     if (!err) {
 
@@ -303,7 +303,7 @@ var previewPage = function(params, headers, cb) {
 
                     var newConfig = JSON.stringify(jsonObj, null, 2);
 
-                    generateConfigFiles(null, params.pageName, newConfig, true, function(err, data) {
+                    generateConfigFiles(params.templateName, params.pageName, newConfig, true, function(err, data) {
 
                         if (!err) {
                             console.log('preview page config.json file backup done');
@@ -376,7 +376,6 @@ var genenerateConfigFileJS = function (jsonConfig, templateName) {
 
     //keep myfanpageapp hardcoded for fake data
     jsonConfig.fanPageId = 'myfanpageapp';//params.pageName;
-    if (templateName) jsonConfig.template = templateName;
 
     var jsonFormatted = JSON.stringify(jsonConfig, null, 2);
     var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+jsonFormatted+');';
