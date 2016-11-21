@@ -191,6 +191,7 @@ var copyConfigFromTemplate = function(templateName, pageName, cb) {
 
                 // transform the file content to a JSON.
                 var jsonObj = JSON.parse('{'+file+'}');
+                jsonObj.prefixAbsoluteTemplateUrl = jsonObj.prefixAbsoluteTemplateUrl.replace(/{@@PAGE}/g, pageName);
                 var json = JSON.stringify(jsonObj);
                 var jsonFormatted = JSON.stringify(jsonObj, null, 2);
 
