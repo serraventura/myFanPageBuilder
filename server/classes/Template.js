@@ -1,12 +1,13 @@
 var CronJob = require('cron').CronJob;
 var fs = require('fs');
 var path = require('path');
+var exec = require('child_process').exec;
 var Template = require('../models/templates').templateSchema;
 
 var getNewTemplates = function () {
 
     var job = new CronJob({
-        //cronTime: '* * * * * *',
+        // cronTime: '* * * * * *',
         cronTime: '00 00 07 * * 1-7',
         onTick: function() {
 
@@ -46,6 +47,10 @@ var insertTemplate = function (name) {
                     console.error('Error saving template: ', err);
                 }else{
                     console.log('template saved');
+                    var gruntProcess = exec('sh updateTemplateCache.sh');
+                    gruntProcess.stdout.on('data', function(data) {
+                        console.log(data);
+                    });
                 }
 
             });
