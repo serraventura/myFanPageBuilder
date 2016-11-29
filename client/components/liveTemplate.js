@@ -79,7 +79,7 @@ export default class LiveTemplate extends React.Component {
                 //     allowFullScreen 
                 // />
             }
-            <Frame mountTarget='.frame-root' initialContent={this.props.selectedTemplateContent}></Frame>
+            {this.props.selectedTemplateContent && <Frame mountTarget='.frame-root' initialContent={this.props.selectedTemplateContent}></Frame>}
 
         </div>);
     };
