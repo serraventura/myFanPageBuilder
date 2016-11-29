@@ -1,15 +1,24 @@
 import * as React from "react";
 import {HIDE, UNHIDE} from "../config";
 import InputElement from "./inputElement";
+import Frame from "react-frame-component";
 
-const LiveTemplate = (props) => {
+export default class LiveTemplate extends React.Component {
+// const LiveTemplate = (props) => {
 
-    let menuItems = !props.templateConfig ? [] : Object.keys(props.templateConfig.menu||{});
-    let menuItemSelected = props.templateConfig ? props.templateConfig.menuItemSelected : null;
-    let menuItemOptions = (!props.templateConfig || !menuItemSelected) ? [] : Object.keys(props.templateConfig.menu[menuItemSelected]||{});
+    constructor(props) {
+        super(props);
+        this.menuItems = !props.templateConfig ? [] : Object.keys(props.templateConfig.menu||{});
+        this.menuItemSelected = props.templateConfig ? props.templateConfig.menuItemSelected : null;
+        this.menuItemOptions = (!props.templateConfig || !this.menuItemSelected) ? [] : Object.keys(props.templateConfig.menu[this.menuItemSelected]||{});
+    }
 
-    return (
-        <div className="live-template-component" style={props.open ? UNHIDE : HIDE} >
+    contentDidMount() {
+        console.log('contentDidMount');
+    }
+
+    render() {
+        return (<div className="live-template-component" style={this.props.open ? UNHIDE : HIDE} >
             <div className="live-template-painel">
 
                 <h3>Template configuration</h3>
@@ -20,14 +29,14 @@ const LiveTemplate = (props) => {
                     <h4>Menu</h4>
                     <ul className="live-template-menu-items">
                         {
-                            menuItems.map(item => {
+                            this.menuItems.map(item => {
                                 return (
                                     <li 
-                                        onClick={ e => props.onSetupMenuItem(item) } 
+                                        onClick={ e => this.props.onSetupMenuItem(item) } 
                                         key={item} 
-                                        className={item === menuItemSelected ? 'active' : ''}
+                                        className={item === this.menuItemSelected ? 'active' : ''}
                                     >
-                                        <a href="javascript:void(0);">Duplicate</a> - {props.templateConfig.menu[item].name}
+                                        <a href="javascript:void(0);">Duplicate</a> - {this.props.templateConfig.menu[item].name}
                                     </li>
                                 );
                             })
@@ -40,14 +49,14 @@ const LiveTemplate = (props) => {
                     <ul>
 
                         {
-                            menuItemOptions.map(item => {
+                            this.menuItemOptions.map(item => {
                                 return (
                                     <li key={item}>
                                         <InputElement 
-                                            templateConfig={props.templateConfig} 
-                                            menuItem={menuItemSelected}
+                                            templateConfig={this.props.templateConfig} 
+                                            menuItem={this.menuItemSelected}
                                             subMenuItem={item}
-                                            onChangeMenuItem={props.onChangeMenuItem}>
+                                            onChangeMenuItem={this.props.onChangeMenuItem}>
                                         </InputElement>
                                     </li>
                                 );
@@ -58,19 +67,22 @@ const LiveTemplate = (props) => {
 
                 </div>
 
-                <button onClick={ e => props.onClose()}>Close</button><button>Publish</button><button onClick={ e => props.onPreview() }>Preview with my Fanpage</button>
+                <button onClick={ e => this.props.onClose()}>Close</button><button>Publish</button><button onClick={ e => this.props.onPreview() }>Preview with my Fanpage</button>
 
             </div>
             <div className="live-template-footer"></div>
-            <iframe 
-                key={props.selectedTemplate}
-                scrolling="auto" 
-                src={props.srcTemplate}
-                allowFullScreen 
-            />
+            {
+                // <iframe 
+                //     key={this.props.selectedTemplate}
+                //     scrolling="auto" 
+                //     src={this.props.srcTemplate}
+                //     allowFullScreen 
+                // />
+            }
+            <Frame mountTarget='.frame-root' initialContent={this.props.selectedTemplateContent}></Frame>
 
-        </div>
-    );
+        </div>);
+    };
 }
 
-export default LiveTemplate;
+// export default LiveTemplate;

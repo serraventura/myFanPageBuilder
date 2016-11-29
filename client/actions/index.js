@@ -119,22 +119,24 @@ export function previewPage() {
                     throw new Error(data.customMessage || data.message);
                 } else {
 
-                    // dispatch({
-                    //     type: PREVIEW_PAGE,
-                    //     payload: {
-                    //         selectedPageTemplateUrl: API().templates + data.response.pageName + '?_=' + Math.random()
-                    //     }
-                    // });
+                    let selectedPageTemplateUrl = API().templates + data.response.pageName + '?_=' + Math.random();
+                    getTemplateContent(selectedPageTemplateUrl).then(templateContent => {
 
-                    dispatch({
-                        type: TEMPLATE_MODIFIED,
-                        payload: {
-                            selectedPageTemplateUrl: API().templates + data.response.pageName + '?_=' + Math.random(),
-                            templateModified: new Date()
-                        }
+                        dispatch({
+                            type: TEMPLATE_MODIFIED,
+                            payload: {
+                                selectedTemplateContent: templateContent,
+                                selectedPageTemplateUrl: selectedPageTemplateUrl,
+                                templateModified: new Date()
+                            }
+                        });
+
+                        dispatch( loading(false) );
+
+                    }).catch(err => {
+                        dispatch( loading(false) );
+                        console.error('Action getTemplateContent() Error: ', err);
                     });
-                    
-                    dispatch( loading(false) );
 
                 }
 
@@ -185,18 +187,28 @@ export function selectTemplate(template) {
                     throw new Error(data.customMessage || data.message);
                 } else {
 
-                    dispatch({
-                        type: SELECT_TEMPLATE,
-                        payload: {
-                            selectedPageTemplateUrl: API().templates + page,
-                            selectedTemplate: data.response.details.templateName,
-                            templateConfig: JSON.parse(data.response.templateConfig)
-                        }
+                    let selectedPageTemplateUrl = API().templates + page;
+
+                    getTemplateContent(selectedPageTemplateUrl).then(templateContent => {
+
+                        dispatch({
+                            type: SELECT_TEMPLATE,
+                            payload: {
+                                selectedTemplateContent: templateContent,
+                                selectedPageTemplateUrl: selectedPageTemplateUrl,
+                                selectedTemplate: data.response.details.templateName,
+                                templateConfig: JSON.parse(data.response.templateConfig)
+                            }
+                        });
+
+                        dispatch( openLiveTemplate(true) );
+
+                        dispatch( loading(false) );
+
+                    }).catch(err => {
+                        dispatch( loading(false) );
+                        console.error('Action getTemplateContent() Error: ', err);
                     });
-
-                    dispatch( openLiveTemplate(true) );
-
-                    dispatch( loading(false) );
 
                 }
 
@@ -211,6 +223,11 @@ export function selectTemplate(template) {
         });
 
     };
+}
+
+function getTemplateContent(url) {
+    let p = new Promise( (resolve, reject) => fetch(url).then( res => res.html() ).then(data => resolve(data)).catch(err => reject(err)));
+    return p;
 }
 
 export function signUp() {

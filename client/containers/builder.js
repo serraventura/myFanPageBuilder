@@ -63,6 +63,7 @@ export class Builder extends React.Component {
                     open={facebookData.isLiveTemplateOpen} 
                     srcTemplate={facebookData.selectedPageTemplateUrl}
                     selectedTemplate={facebookData.selectedTemplate}
+                    selectedTemplateContent={facebookData.selectedTemplateContent}
                     templateConfig={facebookData.templateConfig}
                     onSetupMenuItem={this.props.setTemplateConfigMenuItem}
                     onChangeMenuItem={this.props.changeTemplateConfigMenuItem}
