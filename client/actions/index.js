@@ -226,7 +226,7 @@ export function selectTemplate(template) {
 }
 
 function getTemplateContent(url) {
-    let p = new Promise( (resolve, reject) => fetch(url).then( res => res.html() ).then(data => resolve(data)).catch(err => reject(err)));
+    let p = new Promise( (resolve, reject) => fetch(url).then( res => res.text() ).then(data => resolve(data)).catch(err => reject(err)));
     return p;
 }
 
