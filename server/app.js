@@ -40,7 +40,8 @@ if (app.get('env') === 'development') {
 	// This will change in production since we'll be using the dist folder
 	// This covers serving up the index page
 	// app.use(express.static(path.join(__dirname, '../client/.tmp'), { maxAge: 0 }));
-	app.use(express.static(path.join(__dirname, '../client/dist'), { maxAge: 0 }));
+	// app.use(express.static(path.join(__dirname, '../dist'), { maxAge: 0 }));
+	app.use('/', express.static(path.join(__dirname, '..'), { maxAge: oneDay }));
 
 	// Error Handling
 	app.use(function(err, req, res, next) {
@@ -66,7 +67,7 @@ if (app.get('env') === 'production') {
 	console.log('mode: production');
 
 	// changes it to use the optimized version for production
-	app.use(express.static(path.join(__dirname, '../client/dist'), { maxAge: oneDay }));
+	app.use(express.static(path.join(__dirname, '../dist'), { maxAge: oneDay }));
 
 	// production error handler
 	// no stacktraces leaked to user
