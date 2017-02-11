@@ -114,7 +114,7 @@ var generateConfigFiles = function(templateName, pageName, fileContent, makeBack
     var dist = path.join(__dirname + '/../../live-pages/'+pageName+'/src/config/');
     var jsonObj = JSON.parse(fileContent);
 
-    // save the JSON file representation of the config file 
+    // save the JSON file representation of the config file
     // to manipulate later dynamically.
     fs.writeFile(dist + 'config.json', fileContent, 'utf8', function(err, data) {
 
@@ -180,7 +180,7 @@ var copyConfigFromTemplate = function(templateName, pageName, cb) {
                 var angularBeginFile = line.indexOf('constant') !== -1;
 
                 // getting only the content needed to manipulate a JSON.
-                // the javascript part is ignored 
+                // the javascript part is ignored
                 if ( !beginFile && !angularBeginFile && !endFile ) {
                     file += line.trim();
                 }
@@ -229,7 +229,7 @@ var setTemplate = function(params, headers, cb){
         createUserSpace(params.pageName, null, null, function(err, data) {
 
             if (err) {
-                cb(err);   
+                cb(err);
             } else {
 
                 //TODO: change template accordingly. currently using same template all the time
@@ -357,7 +357,7 @@ var previewPage = function(params, headers, cb) {
         var arrPromises = [
             updateConfigFile(),
             updateIndexHTML()
-        ]; 
+        ];
 
         Q.all(arrPromises)
             .then(function (data) {
@@ -377,6 +377,7 @@ var genenerateConfigFileJS = function (jsonConfig, templateName) {
 
     //keep myfanpageapp hardcoded for fake data
     jsonConfig.fanPageId = 'myfanpageapp';//params.pageName;
+    jsonConfig.enableCache = false;
 
     var jsonFormatted = JSON.stringify(jsonConfig, null, 2);
     var jsConfig = 'angular.module("myFanPageApp").constant("FanPageConfig",'+jsonFormatted+');';

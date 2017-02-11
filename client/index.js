@@ -6,7 +6,7 @@ import {Provider} from "react-redux";
 
 import './styles/style.less';
 
-import App from "./components/app";
+import App from "./containers/app";
 import configureStore from "./store/configureStore";
 
 const store = configureStore();

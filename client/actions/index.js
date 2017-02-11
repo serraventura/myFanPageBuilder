@@ -1,6 +1,6 @@
 import {
-    LOADING, 
-    UPDATE_FB_DATA, 
+    LOADING,
+    UPDATE_FB_DATA,
     SELECT_PAGE,
     SELECT_TEMPLATE,
     SET_TEMPLATE_LIST,
@@ -8,7 +8,8 @@ import {
     SET_TEMPLATE_CONFIG_MENU_ITEM,
     CHANGE_TEMPLATE_CONFIG_MENU_ITEM,
     // PREVIEW_PAGE,
-    TEMPLATE_MODIFIED
+    TEMPLATE_MODIFIED,
+    CACHE_RESOURCE
 } from "./constants";
 
 import {
@@ -24,7 +25,7 @@ export function getFacebookData(facebookData) {
 
         dispatch( loading(true) );
 
-        Promise.all([getPageInfos(), getLoginStatus()]).then(arrResponse => { 
+        Promise.all([getPageInfos(), getLoginStatus()]).then(arrResponse => {
 
             let pageData = arrResponse[0];
             let loginStatus = arrResponse[1];
@@ -47,13 +48,12 @@ export function getFacebookData(facebookData) {
 
         });
 
-    }    
+    }
 }
 
 export function selectPage(page) {
 
     return dispatch => {
-
         dispatch({
             type: SELECT_PAGE,
             payload: page
@@ -133,7 +133,7 @@ export function previewPage() {
                             templateModified: new Date()
                         }
                     });
-                    
+
                     dispatch( loading(false) );
 
                 }
@@ -184,19 +184,35 @@ export function selectTemplate(template) {
                 if(data.statusCode !== 200) {
                     throw new Error(data.customMessage || data.message);
                 } else {
-
+                    const templateName = data.response.details.templateName;
                     dispatch({
                         type: SELECT_TEMPLATE,
                         payload: {
                             selectedPageTemplateUrl: API().templates + page,
-                            selectedTemplate: data.response.details.templateName,
+                            selectedTemplate: templateName,
                             templateConfig: JSON.parse(data.response.templateConfig)
                         }
                     });
 
-                    dispatch( openLiveTemplate(true) );
+                    const urlResources = [...new Set(getListOfResources(page, templateName).map(item => item.href))];
+                    Promise.all(urlResources).then(data => {
+                        dispatch({
+                            type: CACHE_RESOURCE,
+                            payload: getListOfResources(page, templateName)
+                        });
+                        dispatch( openLiveTemplate(true) );
+                        dispatch( loading(false) );
+                    }).catch(err => {
+                        dispatch( loading(false) );
+                        console.error('resources not loaded: ', err);
+                    });
 
-                    dispatch( loading(false) );
+                    // fetch([]).then( res => res.text() ).then(data => {
+
+                    // }).catch(err => {
+                    //     dispatch( loading(false) );
+                    //     console.error('vendor.js not loaded: ', err);
+                    // });
 
                 }
 
@@ -362,4 +378,77 @@ function getLoginStatus() {
 
     return p;
 
+}
+
+function getListOfResources(page, template) {
+    return [
+        {
+            rel: "prerender",
+            href: "http://localhost:3319/templates/" + page + "/index.html"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/src/webcomponent/testplugin/testplugin.js"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/scripts/vendor.js"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/src/scripts.js"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/js/" + template + ".js"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/js/lib.js"
+        },
+        {
+            rel: "subresource",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/styles/" + template + ".css"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/webcomponent/testplugin/testplugin.js",
+            as: "script"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/scripts/vendor.js",
+            as: "script"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/scripts.js",
+            as: "script"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/js/" + template + ".js",
+            as: "script"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/js/lib.js",
+            as: "script"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/assets/styles/" + template + ".css",
+            as: "style"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page,
+            as: "iframe"
+        },
+        {
+            rel: "prefetch",
+            href: "http://localhost:3319/templates/" + page + "/src/webcontent/views/templates/" + template + "/cover.jpg",
+            as: "image"
+        }
+    ];
 }
